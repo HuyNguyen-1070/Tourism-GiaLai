@@ -22,9 +22,22 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-<<<<<<< HEAD
 vite.config.ts.timestamp*
 # Environment
 .env
-=======
->>>>>>> 0e2ad380adaffbc382ea5e79ac5ed9b4da8ca778
+.env.template
+.env.local 
+.env.development
+.env.production
+.env.test
+.env.staging
+.env.production
+.env.test
+.env.staging
+.env.production
+.env.test
+.env.staging
+
+application.properties
+application-dev.properties
+application-prod.properties
