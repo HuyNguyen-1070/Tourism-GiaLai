@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# Tourism-GiaLai
-=======
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -69,5 +66,3 @@ export default defineConfig([
     },
   },
 ])
-```
->>>>>>> 0e2ad380adaffbc382ea5e79ac5ed9b4da8ca778
