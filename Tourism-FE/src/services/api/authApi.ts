@@ -1,9 +1,8 @@
-import api from '@/services/axiosClient';
+import api from '../axiosClient';
 import {
   LoginRequest,
   RegisterRequest,
   ForgotPasswordRequest,
-  ResetPasswordRequest,
   LoginResponse,
   ApiResponse,
 } from '@/types/auth';
@@ -18,6 +17,9 @@ export const authApi = {
   forgotPassword: (data: ForgotPasswordRequest) =>
     api.post<ApiResponse>('/api/auth/forgot-password', data),
 
-  resetPassword: (data: ResetPasswordRequest) =>
+  verifyCode: (data: { email: string; otp: string }) =>
+    api.post<ApiResponse>('/api/auth/verify-otp', data),
+
+  resetPassword: (data: { email: string; newPassword: string }) =>
     api.post<ApiResponse>('/api/auth/reset-password', data),
 };

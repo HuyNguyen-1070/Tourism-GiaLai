@@ -50,3 +50,10 @@ export interface ApiResponse<T = unknown> {
   message: string;
   data?: T;
 }
+
+export interface AuthVerificationProps {
+  type: 'register' | 'forgot-password';
+  email: string;
+  onVerified: () => void;
+  onBack: () => void;
+}

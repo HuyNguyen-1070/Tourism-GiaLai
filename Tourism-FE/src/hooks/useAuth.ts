@@ -3,21 +3,15 @@ import { RootState, AppDispatch } from '@/store/store';
 import { setCredentials, logout } from '@/store/slices/authSlice';
 import { authApi } from '@/services/api/authApi';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import type { RegisterRequest } from '@/types/auth';
+import { RegisterRequest } from '@/types/auth';
 
-type ApiErrorPayload = { message?: string };
-
-const getApiErrorMessage = (error: unknown, fallback: string) => {
-  if (axios.isAxiosError(error)) {
-    const data = error.response?.data as ApiErrorPayload | undefined;
-    return data?.message ?? fallback;
-  }
-
-  if (error instanceof Error) return error.message;
-
-  return fallback;
-};
+interface ErrorResponse {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
 
 export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -36,9 +30,10 @@ export const useAuth = () => {
       );
       return { success: true };
     } catch (error: unknown) {
+      const err = error as ErrorResponse;
       return {
         success: false,
-        message: getApiErrorMessage(error, 'Đăng nhập thất bại'),
+        message: err.response?.data?.message || 'Đăng nhập thất bại',
       };
     }
   };
@@ -48,9 +43,10 @@ export const useAuth = () => {
       await authApi.register(data);
       return { success: true };
     } catch (error: unknown) {
+      const err = error as ErrorResponse;
       return {
         success: false,
-        message: getApiErrorMessage(error, 'Đăng ký thất bại'),
+        message: err.response?.data?.message || 'Đăng ký thất bại',
       };
     }
   };
@@ -71,21 +67,36 @@ export const useAuth = () => {
       await authApi.forgotPassword({ email });
       return { success: true };
     } catch (error: unknown) {
+      const err = error as ErrorResponse;
       return {
         success: false,
-        message: getApiErrorMessage(error, 'Gửi yêu cầu thất bại'),
+        message: err.response?.data?.message || 'Gửi yêu cầu thất bại',
       };
     }
   };
 
-  const resetPassword = async (email: string, otp: string, newPassword: string) => {
+  const verifyOtp = async (email: string, otp: string) => {
     try {
-      await authApi.resetPassword({ email, otp, newPassword });
+      await authApi.verifyCode({ email, otp });
       return { success: true };
     } catch (error: unknown) {
+      const err = error as ErrorResponse;
       return {
         success: false,
-        message: getApiErrorMessage(error, 'Đặt lại mật khẩu thất bại'),
+        message: err.response?.data?.message || 'Mã OTP không hợp lệ',
+      };
+    }
+  };
+
+  const resetPassword = async (email: string, newPassword: string) => {
+    try {
+      await authApi.resetPassword({ email, newPassword });
+      return { success: true };
+    } catch (error: unknown) {
+      const err = error as ErrorResponse;
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Đặt lại mật khẩu thất bại',
       };
     }
   };
@@ -98,6 +109,7 @@ export const useAuth = () => {
     register,
     logoutUser,
     forgotPassword,
+    verifyOtp,
     resetPassword,
   };
 };
