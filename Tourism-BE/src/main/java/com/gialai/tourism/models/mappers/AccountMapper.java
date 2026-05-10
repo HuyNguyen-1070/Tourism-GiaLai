@@ -1,4 +1,4 @@
-package com.gialai.tourism.models.Mappers;
+package com.gialai.tourism.models.mappers;
 
 import com.gialai.tourism.enums.AuthProvider;
 import org.mapstruct.Mapper;

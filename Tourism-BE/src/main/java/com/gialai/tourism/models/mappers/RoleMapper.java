@@ -1,4 +1,4 @@
-package com.gialai.tourism.models.Mappers;
+package com.gialai.tourism.models.mappers;
 
 import com.gialai.tourism.models.entities.Role;
 import org.mapstruct.Mapper;
