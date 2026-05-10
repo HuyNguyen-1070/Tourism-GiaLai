@@ -1,0 +1,4 @@
+DROP TABLE IF EXISTS post_tags;
+DROP TABLE IF EXISTS post_images;
+DROP TABLE IF EXISTS notifications;
+DROP TABLE IF EXISTS posts;

@@ -7,12 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, String> {
     Optional<Account> findByEmail(String email);
     Optional<Account> findByUsername(String username);
+    List<Account> findByRoles_Name(RoleType roleType);
     boolean existsByEmail(String email);
     boolean existsByUsername(String username);
     boolean existsByRoles_Name(RoleType roleType);
