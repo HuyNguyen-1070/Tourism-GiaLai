@@ -1,17 +1,33 @@
-import { createBrowserRouter } from "react-router-dom";
-
-// eslint-disable-next-line react-refresh/only-export-components
-const Home = () => <h1 className="text-2xl">Home Page</h1>;
-// eslint-disable-next-line react-refresh/only-export-components
-const Login = () => <h1 className="text-2xl">Login Page</h1>;
+import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { Login } from '@/pages/auth/Login';
+import { Register } from '@/pages/auth/Register';
+import { ForgotPassword } from '@/pages/auth/ForgotPassword';
+import { Dashboard } from '@/pages/home/Dashboard';
+import PrivateRoute from '@/routes/ProtectedRoute';
 
 export const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Home />,
+    path: '/',
+    element: (
+      <PrivateRoute>
+        <Dashboard />
+      </PrivateRoute>
+    ),
   },
   {
-    path: "/login",
+    path: '/login',
     element: <Login />,
+  },
+  {
+    path: '/register',
+    element: <Register />,
+  },
+  {
+    path: '/forgot-password',
+    element: <ForgotPassword />,
+  },
+  {
+    path: '*',
+    element: <Navigate to="/" />,
   },
 ]);

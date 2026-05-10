@@ -1,7 +1,7 @@
-import { createContext, useContext, ReactNode } from "react";
-import { Toaster, toast } from "sonner";
+import { createContext, useContext, ReactNode } from 'react';
+import { Toaster, toast } from 'sonner';
 
-type ToastSeverity = "success" | "error" | "info" | "warning";
+type ToastSeverity = 'success' | 'error' | 'info' | 'warning';
 
 interface ToastContextProps {
   showToast: (message: string, severity?: ToastSeverity) => void;
@@ -10,15 +10,15 @@ interface ToastContextProps {
 const ToastContext = createContext<ToastContextProps | undefined>(undefined);
 
 export const ToastProvider = ({ children }: { children: ReactNode }) => {
-  const showToast = (msg: string, sev: ToastSeverity = "info") => {
+  const showToast = (msg: string, sev: ToastSeverity = 'info') => {
     switch (sev) {
-      case "success":
+      case 'success':
         toast.success(msg);
         break;
-      case "error":
+      case 'error':
         toast.error(msg);
         break;
-      case "warning":
+      case 'warning':
         toast.warning(msg);
         break;
       default:
@@ -39,7 +39,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
 export const useToast = (): ToastContextProps => {
   const context = useContext(ToastContext);
   if (!context) {
-    throw new Error("useToast must be used within a ToastProvider");
+    throw new Error('useToast must be used within a ToastProvider');
   }
   return context;
 };
