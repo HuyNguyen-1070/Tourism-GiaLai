@@ -14,6 +14,7 @@ import com.gialai.tourism.services.AdminPostService;
 import com.gialai.tourism.services.NotificationService;
 import com.gialai.tourism.specifications.PostSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -67,6 +68,7 @@ public class AdminPostServiceImpl implements AdminPostService {
 
     @Override
     @Transactional
+    @CacheEvict(value = {"featuredPosts", "attractiveLocations", "culturalEvents"}, allEntries = true)
     public PostResponse approvePost(String postId, String adminUsername) {
         Post post = getPendingPost(postId);
         Account admin = accountService.findByUsername(adminUsername);

@@ -12,7 +12,10 @@ public enum CacheDuration {
     CACHE_RESEND_OTP_REQUEST_FOR_REGISTER("cachedResendOtpRequestsForRegister", Duration.ofHours(1)),
     CACHE_VERIFIED_EMAILS("cacheVerifiedEmails", Duration.ofHours(12)),
     CACHE_ALL_TAGS("allTags", Duration.ofHours(1)),
-    CACHE_ALL_MAP_LOCATIONS("allMapLocations", Duration.ofMinutes(10));
+    CACHE_ALL_MAP_LOCATIONS("allMapLocations", Duration.ofMinutes(10)),
+    CACHE_FEATURED_POSTS("featuredPosts", Duration.ofMinutes(15)),
+    CACHE_ATTRACTIVE_LOCATIONS("attractiveLocations", Duration.ofMinutes(30)),
+    CACHE_CULTURAL_EVENTS("culturalEvents", Duration.ofMinutes(30));
 
     private final String cacheName;
     private final Duration duration;
