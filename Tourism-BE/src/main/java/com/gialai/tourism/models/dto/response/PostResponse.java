@@ -1,7 +1,6 @@
 package com.gialai.tourism.models.dto.response;
 
 import com.gialai.tourism.enums.PostStatus;
-import com.gialai.tourism.enums.PostTag;
 import com.gialai.tourism.enums.SourceType;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +15,7 @@ public class PostResponse {
     private String title;
     private String content;
     private String summary;
-    private List<PostTag> tags;
+    private List<String> tags;
     private List<String> images;
     private SourceType sourceType;
     private String sourceName;

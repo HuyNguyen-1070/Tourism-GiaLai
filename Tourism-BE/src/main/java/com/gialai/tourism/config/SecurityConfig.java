@@ -27,11 +27,13 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean public AuthenticationProvider authenticationProvider(){
+    @SuppressWarnings("deprecation")
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
@@ -53,12 +55,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/api/posts/{postId}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/posts/{postId}/comments").permitAll()
+                        // Epic 5 public endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/posts/search").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/tags").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/map/**").permitAll()
+                        // other public endpoints from Constant
                         .requestMatchers(Constant.PUBLIC_ENDPOINTS).permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(securityExceptionHandler)
                         .accessDeniedHandler(securityExceptionHandler))

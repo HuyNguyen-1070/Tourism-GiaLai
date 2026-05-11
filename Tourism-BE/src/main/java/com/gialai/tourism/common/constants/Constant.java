@@ -3,20 +3,23 @@ package com.gialai.tourism.common.constants;
 import com.gialai.tourism.models.entities.*;
 
 import java.util.Map;
-import java.util.Set;
+import static java.util.Map.entry;
 
 public class Constant {
-    public static final Map<Class<?>, String> PREFIX_ENTITIES = Map.of(
-            Account.class, "ACC",
-            RefreshToken.class, "RTK",
-            Role.class, "ROL",
-            Post.class, "PST",
-            Notification.class, "NTF",
-            PostLike.class, "LIK",
-            PostFavorite.class, "FAV",
-            Comment.class, "CMT",
-            Rating.class, "RTG"
+    public static final Map<Class<?>, String> PREFIX_ENTITIES = Map.ofEntries(
+            entry(Account.class, "ACC"),
+            entry(RefreshToken.class, "RTK"),
+            entry(Role.class, "ROL"),
+            entry(Post.class, "PST"),
+            entry(Notification.class, "NTF"),
+            entry(PostLike.class, "LIK"),
+            entry(PostFavorite.class, "FAV"),
+            entry(Comment.class, "CMT"),
+            entry(Rating.class, "RTG"),
+            entry(Tag.class, "TAG"),
+            entry(Location.class, "LOC")
     );
+
     public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
     public static final String TIMEZONE_VIETNAM = "Asia/Ho_Chi_Minh";
     public static final String[] PUBLIC_ENDPOINTS = {

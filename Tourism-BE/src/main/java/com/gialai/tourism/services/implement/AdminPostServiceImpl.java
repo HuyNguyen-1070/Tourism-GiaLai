@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,18 +38,25 @@ public class AdminPostServiceImpl implements AdminPostService {
                                                       String authorId, LocalDateTime from, LocalDateTime to,
                                                       int page, int size, String sortDir) {
         PostStatus postStatus = status != null ? PostStatus.valueOf(status.toUpperCase()) : PostStatus.PENDING;
-        List<PostTag> tagList = null;
+
+        // Base specification: not deleted + status
+        Specification<Post> spec = Specification.allOf(
+                PostSpecification.notDeleted(),
+                PostSpecification.hasStatus(postStatus)
+        );
+
         if (tags != null && !tags.isEmpty()) {
-            tagList = tags.stream().map(PostTag::valueOf).collect(Collectors.toList());
+            spec = spec.and(PostSpecification.hasTags(tags));   // hasTags now accepts List<String>
         }
-
-        Specification<Post> spec = Specification.where(PostSpecification.notDeleted())
-                .and(PostSpecification.hasStatus(postStatus));
-
-        if (tagList != null) spec = spec.and(PostSpecification.hasTags(tagList));
-        if (keyword != null) spec = spec.and(PostSpecification.containsKeyword(keyword));
-        if (authorId != null) spec = spec.and(PostSpecification.hasAuthorId(authorId));
-        if (from != null || to != null) spec = spec.and(PostSpecification.createdBetween(from, to));
+        if (keyword != null && !keyword.isBlank()) {
+            spec = spec.and(PostSpecification.containsKeyword(keyword));
+        }
+        if (authorId != null && !authorId.isBlank()) {
+            spec = spec.and(PostSpecification.hasAuthorId(authorId));
+        }
+        if (from != null || to != null) {
+            spec = spec.and(PostSpecification.createdBetween(from, to));
+        }
 
         Sort sort = Sort.by(sortDir != null && sortDir.equalsIgnoreCase("desc") ?
                 Sort.Direction.DESC : Sort.Direction.ASC, "createdAt");

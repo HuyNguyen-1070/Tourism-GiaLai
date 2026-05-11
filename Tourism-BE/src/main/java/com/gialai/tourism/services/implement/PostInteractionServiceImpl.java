@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -96,7 +97,7 @@ public class PostInteractionServiceImpl implements PostInteractionService {
                     .id(post.getId())
                     .title(post.getTitle())
                     .summary(post.getSummary())
-                    .tags(post.getTags())
+                    .tags(post.getTags().stream().map(Tag::getName).collect(Collectors.toList()))
                     .authorUsername(post.getAuthor().getUsername())
                     .status(post.getStatus())
                     .viewCount(post.getViewCount())
