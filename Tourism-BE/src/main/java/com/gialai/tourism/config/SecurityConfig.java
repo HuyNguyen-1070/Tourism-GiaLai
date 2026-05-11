@@ -55,6 +55,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/api/posts/{postId}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/posts/{postId}/comments").permitAll()
+                        // Epic 4 public endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/homepage/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/history-timeline").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/tourism-overview").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/events-festivals").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/attractions", "/api/attractions/*").permitAll()
                         // Epic 5 public endpoints
                         .requestMatchers(HttpMethod.GET, "/api/posts/search").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/tags").permitAll()
