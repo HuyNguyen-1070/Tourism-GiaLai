@@ -24,7 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin/posts")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAuthority('ADMIN')")
 @Tag(name = "Admin Post", description = "Admin post management APIs")
 public class AdminPostController {
 

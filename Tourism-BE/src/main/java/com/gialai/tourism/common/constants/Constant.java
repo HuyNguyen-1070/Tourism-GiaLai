@@ -11,8 +11,11 @@ public class Constant {
             RefreshToken.class, "RTK",
             Role.class, "ROL",
             Post.class, "PST",
-            Notification.class, "NTF"
-
+            Notification.class, "NTF",
+            PostLike.class, "LIK",
+            PostFavorite.class, "FAV",
+            Comment.class, "CMT",
+            Rating.class, "RTG"
     );
     public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
     public static final String TIMEZONE_VIETNAM = "Asia/Ho_Chi_Minh";

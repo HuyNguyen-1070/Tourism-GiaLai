@@ -23,4 +23,5 @@ public class PostSummaryResponse {
     private double averageRating;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private LocalDateTime favoritedAt;
 }
