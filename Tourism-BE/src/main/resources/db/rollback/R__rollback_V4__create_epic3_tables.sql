@@ -1,0 +1,4 @@
+DROP TABLE IF EXISTS ratings;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS post_favorites;
+DROP TABLE IF EXISTS post_likes;

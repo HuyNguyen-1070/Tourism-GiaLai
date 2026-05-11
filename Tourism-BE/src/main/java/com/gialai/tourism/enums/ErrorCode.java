@@ -56,6 +56,11 @@ public enum ErrorCode {
     INVALID_TAG("Invalid tag provided", HttpStatus.BAD_REQUEST),
     SOURCE_NAME_REQUIRED("sourceName is required when sourceType is EXTERNAL", HttpStatus.BAD_REQUEST),
     CONTENT_TOO_SHORT("Content must be at least 50 plain text characters", HttpStatus.BAD_REQUEST),
+    POST_NOT_AVAILABLE("Post '%s' not found or not available", HttpStatus.NOT_FOUND),
+    COMMENT_NOT_FOUND("Comment '%s' not found", HttpStatus.NOT_FOUND),
+    NOT_COMMENT_OWNER("You do not have permission to edit this comment", HttpStatus.FORBIDDEN),
+    INVALID_RATING_SCORE("Score must be between 0.0 and 5.0 with step 0.5 (e.g., 0.5, 1.0, ..., 5.0)", HttpStatus.BAD_REQUEST),
+    RATING_ALREADY_EXISTS("You have already rated this post", HttpStatus.CONFLICT),
 
     // === System & Uncategorized ===
     NOT_IMPLEMENTED("Feature not implemented", HttpStatus.NOT_IMPLEMENTED),
