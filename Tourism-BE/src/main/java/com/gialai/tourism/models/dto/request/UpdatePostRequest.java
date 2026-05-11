@@ -21,7 +21,7 @@ public class UpdatePostRequest {
 
     @NotEmpty(message = "At least one tag is required")
     @Size(max = 5)
-    private List<PostTag> tags;
+    private List<String> tags;
 
     private List<String> images;
 

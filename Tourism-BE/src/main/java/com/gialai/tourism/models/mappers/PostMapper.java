@@ -5,74 +5,65 @@ import com.gialai.tourism.models.dto.request.UpdatePostRequest;
 import com.gialai.tourism.models.dto.response.PostResponse;
 import com.gialai.tourism.models.dto.response.PostSummaryResponse;
 import com.gialai.tourism.models.entities.Post;
-import org.springframework.stereotype.Component;
+import com.gialai.tourism.models.entities.Tag;
+import com.gialai.tourism.services.TagMappingService;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Component
-public class PostMapper {
+import java.util.stream.Collectors;
 
-    public Post toEntity(CreatePostRequest request) {
-        return Post.builder()
-                .title(request.getTitle())
-                .content(request.getContent())
-                .summary(request.getSummary())
-                .sourceType(request.getSourceType())
-                .sourceName(request.getSourceName())
-                .images(request.getImages())
-                .tags(request.getTags())
-                .build();
+@Mapper(componentModel = "spring")
+public abstract class PostMapper {
+
+    @Autowired
+    protected TagMappingService tagMappingService;
+
+    @Mapping(target = "tags", ignore = true)
+    @Mapping(target = "authorUsername", source = "author.username")
+    @Mapping(target = "approvedByUsername", source = "approvedBy.username")
+    @Mapping(target = "rejectedByUsername", source = "rejectedBy.username")
+    public abstract PostResponse toResponse(Post post);
+
+    @Mapping(target = "tags", ignore = true)
+    @Mapping(target = "authorUsername", source = "author.username")
+    @Mapping(target = "favoritedAt", ignore = true)
+    public abstract PostSummaryResponse toSummary(Post post);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "title", source = "title")
+    @Mapping(target = "content", source = "content")
+    @Mapping(target = "summary", source = "summary")
+    @Mapping(target = "sourceType", source = "sourceType")
+    @Mapping(target = "sourceName", source = "sourceName")
+    @Mapping(target = "images", source = "images")
+    public abstract Post toEntity(CreatePostRequest request);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "title", source = "title")
+    @Mapping(target = "content", source = "content")
+    @Mapping(target = "summary", source = "summary")
+    @Mapping(target = "sourceType", source = "sourceType")
+    @Mapping(target = "sourceName", source = "sourceName")
+    @Mapping(target = "images", source = "images")
+    public abstract void updateEntity(@MappingTarget Post post, UpdatePostRequest request);
+
+    @AfterMapping
+    protected void mapTagsToString(Post post, @MappingTarget PostResponse target) {
+        target.setTags(post.getTags().stream().map(Tag::getName).collect(Collectors.toList()));
     }
 
-    public void updateEntity(Post post, UpdatePostRequest request) {
-        post.setTitle(request.getTitle());
-        post.setContent(request.getContent());
-        post.setSummary(request.getSummary());
-        post.setSourceType(request.getSourceType());
-        post.setSourceName(request.getSourceName());
-        post.setImages(request.getImages());
-        post.setTags(request.getTags());
+    @AfterMapping
+    protected void mapSummaryTags(Post post, @MappingTarget PostSummaryResponse target) {
+        target.setTags(post.getTags().stream().map(Tag::getName).collect(Collectors.toList()));
     }
 
-    public PostResponse toResponse(Post post) {
-        return PostResponse.builder()
-                .id(post.getId())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .summary(post.getSummary())
-                .tags(post.getTags())
-                .images(post.getImages())
-                .sourceType(post.getSourceType())
-                .sourceName(post.getSourceName())
-                .authorUsername(post.getAuthor().getUsername())
-                .status(post.getStatus())
-                .viewCount(post.getViewCount())
-                .likeCount(post.getLikeCount())
-                .favoriteCount(post.getFavoriteCount())
-                .averageRating(post.getAverageRating())
-                .ratingCount(post.getRatingCount())
-                .createdAt(post.getCreatedAt())
-                .updatedAt(post.getUpdatedAt())
-                .approvedAt(post.getApprovedAt())
-                .rejectedAt(post.getRejectedAt())
-                .approvedByUsername(post.getApprovedBy() != null ? post.getApprovedBy().getUsername() : null)
-                .rejectedByUsername(post.getRejectedBy() != null ? post.getRejectedBy().getUsername() : null)
-                .rejectionReason(post.getRejectionReason())
-                .build();
+    @AfterMapping
+    protected void mapRequestTags(CreatePostRequest request, @MappingTarget Post post) {
+        post.setTags(tagMappingService.mapTagNames(request.getTags()));
     }
 
-    public PostSummaryResponse toSummary(Post post) {
-        return PostSummaryResponse.builder()
-                .id(post.getId())
-                .title(post.getTitle())
-                .summary(post.getSummary())
-                .tags(post.getTags())
-                .authorUsername(post.getAuthor().getUsername())
-                .status(post.getStatus())
-                .viewCount(post.getViewCount())
-                .likeCount(post.getLikeCount())
-                .favoriteCount(post.getFavoriteCount())
-                .averageRating(post.getAverageRating())
-                .createdAt(post.getCreatedAt())
-                .updatedAt(post.getUpdatedAt())
-                .build();
+    @AfterMapping
+    protected void mapUpdateTags(UpdatePostRequest request, @MappingTarget Post post) {
+        post.setTags(tagMappingService.mapTagNames(request.getTags()));
     }
 }

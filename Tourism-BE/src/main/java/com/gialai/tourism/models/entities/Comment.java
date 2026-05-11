@@ -25,5 +25,6 @@ public class Comment extends BaseEntity {
     private String content;
 
     @Column(name = "is_deleted", nullable = false)
+    @Builder.Default
     private boolean isDeleted = false;
 }

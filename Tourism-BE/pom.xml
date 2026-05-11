@@ -127,11 +127,6 @@
 			<artifactId>cloudinary-http44</artifactId>
 			<version>1.38.0</version>
 		</dependency>
-        <dependency>
-            <groupId>com.gialai</groupId>
-            <artifactId>tourism</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
 	<build>

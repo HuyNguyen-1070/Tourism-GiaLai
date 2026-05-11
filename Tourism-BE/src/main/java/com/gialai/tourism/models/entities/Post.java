@@ -2,21 +2,19 @@ package com.gialai.tourism.models.entities;
 
 import com.gialai.tourism.common.base.BaseEntity;
 import com.gialai.tourism.enums.PostStatus;
-import com.gialai.tourism.enums.PostTag;
 import com.gialai.tourism.enums.SourceType;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "posts")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor @Builder
 public class Post extends BaseEntity {
 
     @Column(nullable = false, length = 255)
@@ -63,11 +61,15 @@ public class Post extends BaseEntity {
     @Column(name = "image_url")
     private List<String> images;
 
-    @ElementCollection
-    @CollectionTable(name = "post_tags", joinColumns = @JoinColumn(name = "post_id"))
-    @Enumerated(EnumType.STRING)
-    @Column(name = "tag")
-    private List<PostTag> tags;
+    @ManyToMany
+    @JoinTable(name = "post_tags",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    @Builder.Default
+    private Set<Tag> tags = new HashSet<>();
+
+    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Location location;
 
     private LocalDateTime approvedAt;
     private LocalDateTime rejectedAt;
