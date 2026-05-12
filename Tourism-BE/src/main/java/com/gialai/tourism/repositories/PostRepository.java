@@ -32,4 +32,52 @@ public interface PostRepository extends JpaRepository<Post, String>, JpaSpecific
     List<Post> findTopPostsByTags(@Param("tagNames") List<String> tagNames,
                                   @Param("since") LocalDateTime since,
                                   Pageable pageable);
+
+    long countByAuthorIdAndStatus(String authorId, PostStatus status);
+    long countByAuthorIdAndStatusNot(String authorId, PostStatus status);
+
+    long countByStatusNot(PostStatus status);
+    long countByStatus(PostStatus status);
+
+    long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+    long countByUpdatedAtBetweenAndCreatedAtBefore(LocalDateTime start, LocalDateTime end, LocalDateTime before);
+
+    // Sửa JPQL: dùng "Post" (tên entity) thay cho "posts" (tên bảng)
+    @Query("SELECT COUNT(p) FROM Post p JOIN p.tags t WHERE t.id = :tagId AND p.status = :status")
+    long countByTagsContainingAndStatus(@Param("tagId") String tagId, @Param("status") PostStatus status);
+
+    @Query("SELECT COUNT(p) FROM Post p JOIN p.tags t WHERE t.id = :tagId AND p.status <> :status")
+    long countByTagsContainingAndStatusNot(@Param("tagId") String tagId, @Param("status") PostStatus status);
+
+    long countByAuthorId(String authorId);
+
+    @Query(value = "SELECT pt.tag_id, t.name, COUNT(DISTINCT p.id), SUM(p.like_count), SUM(p.favorite_count), AVG(p.average_rating), " +
+            "SUM(p.like_count) + SUM(p.favorite_count) + AVG(p.average_rating) * 10 AS score " +
+            "FROM post_tags pt JOIN posts p ON p.id = pt.post_id JOIN tags t ON t.id = pt.tag_id " +
+            "WHERE p.status = :status AND (p.created_at >= :since OR p.updated_at >= :since) " +
+            "GROUP BY pt.tag_id, t.name ORDER BY score DESC LIMIT :limit", nativeQuery = true)
+    List<Object[]> trendingTags(@Param("since") LocalDateTime since, @Param("status") String status, @Param("limit") int limit);
+
+    @Query(value = "SELECT p.id, p.title, a.username, p.view_count, p.like_count, p.favorite_count, p.average_rating, " +
+            "(p.view_count + p.like_count + p.favorite_count) AS engagement " +
+            "FROM posts p JOIN accounts a ON p.author_id = a.id " +
+            "WHERE p.status = :status AND (p.created_at >= :since OR p.updated_at >= :since) " +
+            "ORDER BY engagement DESC LIMIT :limit", nativeQuery = true)
+    List<Object[]> topEngagedPostsWithoutTags(@Param("since") LocalDateTime since,
+                                              @Param("status") String status,
+                                              @Param("limit") int limit);
+
+    @Query(value = "SELECT p.id, p.title, a.username, p.view_count, p.like_count, p.favorite_count, p.average_rating, " +
+            "(p.view_count + p.like_count + p.favorite_count) AS engagement " +
+            "FROM posts p JOIN accounts a ON p.author_id = a.id " +
+            "WHERE p.status = :status AND (p.created_at >= :since OR p.updated_at >= :since) " +
+            "AND EXISTS (SELECT 1 FROM post_tags pt JOIN tags t ON pt.tag_id = t.id WHERE pt.post_id = p.id AND t.name IN (:tagNames)) " +
+            "ORDER BY engagement DESC LIMIT :limit", nativeQuery = true)
+    List<Object[]> topEngagedPostsWithTags(@Param("since") LocalDateTime since,
+                                           @Param("status") String status,
+                                           @Param("tagNames") List<String> tagNames,
+                                           @Param("limit") int limit);
+
+    @Query("SELECT t.name FROM Post p JOIN p.tags t WHERE p.id = :postId")
+    List<String> findTagNamesByPostId(@Param("postId") String postId);
 }
