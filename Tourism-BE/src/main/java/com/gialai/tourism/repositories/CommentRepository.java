@@ -17,4 +17,6 @@ public interface CommentRepository extends JpaRepository<Comment, String> {
     Page<Comment> findActiveCommentsByPostId(@Param("postId") String postId, Pageable pageable);
 
     Optional<Comment> findByIdAndIsDeletedFalse(String commentId);
+
+    long countByIsDeletedFalse();
 }
