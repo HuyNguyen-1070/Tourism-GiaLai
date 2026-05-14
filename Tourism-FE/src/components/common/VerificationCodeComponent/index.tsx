@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { LoadingButton } from '@/components/common/ui/LoadingButton';
+import { LoadingButton } from '@/components/common/CustomUi/LoadingButton';
 
 interface VerificationCodeProps {
   email: string;
@@ -108,13 +108,13 @@ export const VerificationCode = ({ email, onVerified, onBack }: VerificationCode
         <h2 className="text-xl font-semibold">Xác thực mã OTP</h2>
       </div>
 
-      <p className="text-sm text-gray-600 mb-4">
+      <p className="text-md text-gray-600 mb-4">
         Mã xác thực đã được gửi đến email <strong className="text-gray-900">{email}</strong>. Vui
         lòng nhập mã bên dưới.
       </p>
 
       <div className="mb-2 text-left">
-        <span className="text-sm text-gray-700">
+        <span className="text-md text-gray-700">
           Mã có hiệu lực trong: <span className="font-bold text-black">{formatTime(timeLeft)}</span>
         </span>
       </div>
@@ -148,12 +148,12 @@ export const VerificationCode = ({ email, onVerified, onBack }: VerificationCode
         onClick={handleSubmit}
         isLoading={isVerifying}
         disabled={code.join('').length !== VERIFICATION_CODE_LENGTH}
-        className="w-full"
+        className="w-full text-md min-h-[35px]"
       >
         Xác nhận
       </LoadingButton>
 
-      <p className="text-sm text-gray-600 mt-4 text-center">
+      <p className="text-md text-gray-600 mt-4 text-center">
         Chưa nhận được mã?{' '}
         <button
           onClick={handleResendCode}

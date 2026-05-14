@@ -12,15 +12,15 @@
 
 ## 1. Tech Stack
 
-| Thành phần   | Công nghệ                          |
-|--------------|------------------------------------|
-| Framework    | React (Vite)                       |
-| State        | Redux Toolkit                      |
-| Styling      | Tailwind CSS                       |
-| HTTP Client  | Axios                              |
-| Rich Text    | React Quill / TipTap               |
-| Map          | Google Maps JavaScript API         |
-| Deploy       | Vercel                             |
+| Thành phần  | Công nghệ                  |
+| ----------- | -------------------------- |
+| Framework   | React (Vite)               |
+| State       | Redux Toolkit              |
+| Styling     | Tailwind CSS               |
+| HTTP Client | Axios                      |
+| Rich Text   | React Quill / TipTap       |
+| Map         | Google Maps JavaScript API |
+| Deploy      | Vercel                     |
 
 ---
 
@@ -34,9 +34,9 @@
 - Constant: UPPER_CASE → `API_BASE_URL`, `MAX_IMAGES`, `OTP_EXPIRE_SECONDS`
 
 ```js
-const postList = []
-const isLoading = false
-const MAX_IMAGES = 10
+const postList = [];
+const isLoading = false;
+const MAX_IMAGES = 10;
 ```
 
 ### 2.2. Function Rules
@@ -47,17 +47,16 @@ const MAX_IMAGES = 10
 
 ```js
 const handleSubmitPost = async () => {
-  if (!isValidForm()) return
-  await createPost()
-}
+  if (!isValidForm()) return;
+  await createPost();
+};
 
-const isValidForm = () =>
-  form.title && form.content && form.tags.length > 0
+const isValidForm = () => form.title && form.content && form.tags.length > 0;
 
 const createPost = async () => {
-  const res = await postService.create(form)
-  handleSuccess(res)
-}
+  const res = await postService.create(form);
+  handleSuccess(res);
+};
 ```
 
 ---
@@ -77,14 +76,14 @@ export const postService = {
   updatePost: (id, data) => api.put(`/posts/${id}`, data),
   deletePost: (id) => api.delete(`/posts/${id}`),
   getMyPosts: (params) => api.get('/posts/me', { params }),
-}
+};
 
 // src/modules/admin/services/adminPostService.ts
 export const adminPostService = {
   getPendingPosts: (params) => api.get('/admin/posts', { params }),
   approvePost: (id) => api.patch(`/admin/posts/${id}/approve`),
   rejectPost: (id, data) => api.patch(`/admin/posts/${id}/reject`, data),
-}
+};
 ```
 
 ### 3.2. Hook
@@ -92,25 +91,27 @@ export const adminPostService = {
 ```ts
 // src/modules/post/hooks/usePostList.ts
 export const usePostList = (params) => {
-  const [posts, setPosts] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const fetchPosts = async () => {
     try {
-      setLoading(true)
-      const res = await postService.getPosts(params)
-      setPosts(res.data.data.content)
+      setLoading(true);
+      const res = await postService.getPosts(params);
+      setPosts(res.data.data.content);
     } catch (err) {
-      setError(err.message)
+      setError(err.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  useEffect(() => { fetchPosts() }, [])
-  return { posts, loading, error, fetchPosts }
-}
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+  return { posts, loading, error, fetchPosts };
+};
 ```
 
 ### 3.3. UI Component
@@ -118,9 +119,9 @@ export const usePostList = (params) => {
 ```jsx
 // src/modules/post/components/PostList.jsx
 const PostList = ({ posts }) => {
-  if (!posts.length) return <EmptyState message="Chưa có bài viết nào." />
-  return posts.map(post => <PostCard key={post.id} post={post} />)
-}
+  if (!posts.length) return <EmptyState message="Chưa có bài viết nào." />;
+  return posts.map((post) => <PostCard key={post.id} post={post} />);
+};
 ```
 
 ---
@@ -134,45 +135,48 @@ const PostList = ({ posts }) => {
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 10000,
-})
+});
 ```
 
 ### 4.2. Interceptor (JWT + Refresh Token)
 
 ```ts
-api.interceptors.request.use(config => {
-  const token = localStorage.getItem('accessToken')
-  if (token) config.headers.Authorization = `Bearer ${token}`
-  return config
-})
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('accessToken');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 
 api.interceptors.response.use(
-  res => res,
-  async err => {
+  (res) => res,
+  async (err) => {
     if (err.response?.status === 401) {
       // gọi refresh token, nếu thất bại → logout
-      await authService.refreshToken()
+      await authService.refreshToken();
     }
-    return Promise.reject(err)
+    return Promise.reject(err);
   }
-)
+);
 ```
 
 ### 4.3. Xử lý tất cả trạng thái
 
 ```jsx
 const PostPage = () => {
-  const { posts, loading, error, fetchPosts } = usePostList()
-  useEffect(() => { fetchPosts() }, [])
+  const { posts, loading, error, fetchPosts } = usePostList();
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
-  if (loading) return <Spinner />
-  if (error)   return <ErrorMessage message={error} />
-  if (!posts.length) return <EmptyState />
-  return <PostList posts={posts} />
-}
+  if (loading) return <Spinner />;
+  if (error) return <ErrorMessage message={error} />;
+  if (!posts.length) return <EmptyState />;
+  return <PostList posts={posts} />;
+};
 ```
 
 **Rules:**
+
 - Không gọi API trực tiếp trong component
 - Luôn xử lý đủ 4 trạng thái: loading / success / error / empty
 - Không để lộ logic API call trong JSX
@@ -183,22 +187,24 @@ const PostPage = () => {
 
 ```jsx
 // src/modules/post/components/PostEditor.jsx
-import ReactQuill from 'react-quill'
-import 'react-quill/dist/quill.snow.css'
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const PostEditor = ({ value, onChange }) => (
   <ReactQuill
     theme="snow"
     value={value}
     onChange={onChange}
-    modules={{ toolbar: [
-      ['bold', 'italic', 'underline'],
-      [{ heading: [1, 2, 3] }],
-      ['image', 'link'],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-    ]}}
+    modules={{
+      toolbar: [
+        ['bold', 'italic', 'underline'],
+        [{ heading: [1, 2, 3] }],
+        ['image', 'link'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+      ],
+    }}
   />
-)
+);
 ```
 
 **Rule:** Sanitize HTML trước khi gửi lên BE để tránh XSS.
@@ -214,18 +220,19 @@ const authSlice = createSlice({
   initialState: { user: null, accessToken: null },
   reducers: {
     setCredentials: (state, action) => {
-      state.user = action.payload.user
-      state.accessToken = action.payload.accessToken
+      state.user = action.payload.user;
+      state.accessToken = action.payload.accessToken;
     },
     logout: (state) => {
-      state.user = null
-      state.accessToken = null
+      state.user = null;
+      state.accessToken = null;
     },
   },
-})
+});
 ```
 
 **Rules:**
+
 - Không lưu state có thể tính toán được (computed state)
 - Redux chỉ lưu global state: `auth`, `notifications`
 - State cục bộ của form/modal dùng `useState` trong component
@@ -239,25 +246,22 @@ const authSlice = createSlice({
 ```js
 // Tránh tạo hàm mới mỗi lần render
 const handleLike = useCallback(() => {
-  likePost(post.id)
-}, [post.id])
+  likePost(post.id);
+}, [post.id]);
 ```
 
 ### Memoization
 
 ```js
 // Tránh tính toán lại không cần thiết
-const featuredPosts = useMemo(
-  () => posts.filter(p => p.isFeatured),
-  [posts]
-)
+const featuredPosts = useMemo(() => posts.filter((p) => p.isFeatured), [posts]);
 ```
 
 ### Code Splitting
 
 ```js
-const AdminDashboard = React.lazy(() => import('./pages/admin/AdminDashboard'))
-const MapPage = React.lazy(() => import('./pages/MapPage'))
+const AdminDashboard = React.lazy(() => import('./pages/admin/AdminDashboard'));
+const MapPage = React.lazy(() => import('./pages/MapPage'));
 ```
 
 ### Checklist
@@ -270,50 +274,31 @@ const MapPage = React.lazy(() => import('./pages/MapPage'))
 
 ---
 
-## 8. Folder Structure
+## Folder Structure
+
+### Bad
 
 ```
 src/
-├── modules/
-│   ├── auth/
-│   │   ├── components/     # LoginForm, RegisterForm, ForgotPasswordForm, OtpInput
-│   │   ├── hooks/          # useLogin, useRegister, useForgotPassword
-│   │   ├── services/       # authService.ts
-│   │   ├── store/          # authSlice.ts
-│   │   └── pages/          # LoginPage, RegisterPage, ForgotPasswordPage
-│   ├── post/
-│   │   ├── components/     # PostCard, PostList, PostEditor, PostDetail, PostForm
-│   │   ├── hooks/          # usePostList, usePostDetail, useCreatePost, useMyPosts
-│   │   ├── services/       # postService.ts
-│   │   └── pages/          # PostListPage, PostDetailPage, CreatePostPage, EditPostPage, MyPostsPage
-│   ├── interaction/
-│   │   ├── components/     # LikeButton, FavoriteButton, CommentList, RatingStars
-│   │   ├── hooks/          # useLike, useFavorite, useComments, useRating
-│   │   └── services/       # interactionService.ts
-│   ├── homepage/
-│   │   ├── components/     # FeaturedPosts, AttractionList, EventList, HistoryTimeline
-│   │   ├── hooks/          # useHomepageData, useHistoryTimeline
-│   │   └── pages/          # HomePage, HistoryPage, TourismOverviewPage, EventPage, AttractionPage
-│   ├── map/
-│   │   ├── components/     # TourismMap, LocationMarker, LocationPopup
-│   │   ├── hooks/          # useNearbyLocations, useAllLocations
-│   │   └── pages/          # MapPage
-│   ├── notification/
-│   │   ├── components/     # NotificationBell, NotificationList, NotificationItem
-│   │   ├── hooks/          # useNotifications
-│   │   ├── services/       # notificationService.ts
-│   │   └── store/          # notificationSlice.ts
-│   └── admin/
-│       ├── components/     # PostApprovalCard, RejectModal, UserTable, TagManager, StatChart
-│       ├── hooks/          # usePendingPosts, useApprovePost, useAdminStats
-│       ├── services/       # adminPostService.ts, adminUserService.ts, adminTagService.ts
-│       └── pages/          # AdminDashboardPage, PendingPostsPage, UserManagementPage, TagManagementPage, StatisticsPage
-├── shared/
-│   ├── components/         # Spinner, ErrorMessage, EmptyState, Pagination, Modal, ImageUploader
-│   ├── hooks/              # useDebounce, usePagination
-│   ├── api/                # axiosInstance.ts
-│   ├── constants/          # APP_CONSTANTS.ts (MAX_IMAGES, OTP_EXPIRE, ...)
-│   └── utils/              # formatDate, truncateText, sanitizeHtml
-└── store/
-    └── index.ts            # Redux store root
+  components/
+  utils/
+  pages/
 ```
+
+### Best (feature-based)
+
+```
+src/modules/user/{components,hooks,services,types,pages}
+```
+
+### Shared
+
+```
+src/shared/{components,hooks,utils,constants}
+```
+
+### Why
+
+- Scalable
+- Maintainable
+- Reusable

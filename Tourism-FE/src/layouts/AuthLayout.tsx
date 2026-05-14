@@ -1,33 +1,106 @@
-import { Card } from '@/components/ui/card';
 import React from 'react';
-import { AuthLayoutProps } from '@/types/AuthLayoutProps';
+import { Link } from 'react-router-dom';
+import { Footer } from '@/components/common/Footer/Footer';
 
-export const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title, subtitle }) => {
+interface AuthLayoutProps {
+  children: React.ReactNode;
+  title: string;
+  subtitle?: string;
+  heroImage?: string;
+  heroTitle?: string;
+  heroSubtitle?: string;
+}
+
+export const AuthLayout: React.FC<AuthLayoutProps> = ({
+  children,
+  title,
+  subtitle,
+  heroImage = '/images/BG.png',
+  heroTitle = 'Join the Heritage Journey',
+  heroSubtitle = 'Create an account to preserve your favorite historical landmarks and cultural events across the Gia Lai plateau.',
+}) => {
   return (
-    <div className="h-screen w-screen flex flex-col md:flex-row">
-      <div
-        className="hidden md:block md:w-1/2 h-full bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1530521954074-e64f6810b32d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')",
-        }}
-      />
+    <div className="bg-mist-beige font-body-md text-on-surface min-h-screen flex flex-col">
+      {/* Header */}
+      <header className="bg-mist-beige border-b border-secondary/20 shadow-sm shadow-basalt-soil/5 sticky top-0 z-50">
+        <div className="flex justify-between items-center w-full px-margin-desktop max-w-container-max mx-auto py-4">
+          <Link to="/" className="font-headline-lg text-headline-lg text-forest-leaf italic">
+            Gia Lai Heritage
+          </Link>
+          <div className="hidden md:flex items-center space-x-8">
+            <a
+              className="text-on-surface-variant hover:text-forest-leaf transition-colors font-label-md text-label-md"
+              href="#"
+            >
+              Destinations
+            </a>
+            <a
+              className="text-on-surface-variant hover:text-forest-leaf transition-colors font-label-md text-label-md"
+              href="#"
+            >
+              History
+            </a>
+            <a
+              className="text-on-surface-variant hover:text-forest-leaf transition-colors font-label-md text-label-md"
+              href="#"
+            >
+              Culture
+            </a>
+            <a
+              className="text-on-surface-variant hover:text-forest-leaf transition-colors font-label-md text-label-md"
+              href="#"
+            >
+              Events
+            </a>
+            <Link
+              to="/login"
+              className="bg-forest-leaf text-white px-6 py-2 rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity"
+            >
+              Sign In
+            </Link>
+          </div>
+        </div>
+      </header>
 
-      <div className="flex-1 flex items-center justify-center bg-[#DDDDDD] p-4 sm:p-6 md:p-8">
-        <div className="w-full max-w-md sm:max-w-lg md:max-w-xl">
-          <Card className="backdrop-blur-md bg-white shadow-2xl rounded-3xl border border-white/20 p-6 sm:p-8 md:p-10 transition-all duration-300">
-            <div className="text-center mb-8">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[#333]">
-                {title}
-              </h1>
-              {subtitle && (
-                <p className="text-gray-400 mt-3 text-base sm:text-lg font-medium">{subtitle}</p>
-              )}
+      {/* Main */}
+      <main className="flex-grow flex items-center justify-center py-12 px-4 relative overflow-hidden">
+        {/* Background pattern */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 2px 2px, #4B3621 1px, transparent 0)',
+            backgroundSize: '24px 24px',
+            opacity: 0.03,
+          }}
+        />
+
+        <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 bg-surface-container-lowest rounded-xl shadow-xl shadow-basalt-soil/10 overflow-hidden relative z-10">
+          {/* Left visual */}
+          <div className="hidden md:block relative h-full min-h-[600px]">
+            <img
+              className="absolute inset-0 w-full h-full object-cover"
+              src={heroImage}
+              alt="Gia Lai landscape"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-basalt-soil/80 via-transparent to-transparent flex flex-col justify-end p-12">
+              <h2 className="font-headline-lg text-headline-lg text-white mb-4">{heroTitle}</h2>
+              <p className="font-body-md text-white/90">{heroSubtitle}</p>
+            </div>
+          </div>
+
+          {/* Right: form */}
+          <div className="p-8 md:p-12 bg-white">
+            <div className="mb-8">
+              <h1 className="font-headline-md text-headline-md text-basalt-soil mb-2">{title}</h1>
+              {subtitle && <p className="font-body-md text-on-surface-variant">{subtitle}</p>}
             </div>
             {children}
-          </Card>
+          </div>
         </div>
-      </div>
+      </main>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
