@@ -16,11 +16,10 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Vehicle Management API")
-                        .description("The API service application was built by the Interns of TIP")
+                        .title("Gia Lai Tourism API")
                         .version("1.0")
                         .contact(new Contact()
-                                .name("Vehicle Management API")))
+                                .name("Gia Lai Tourism")))
                 .components(new Components()
                         .addSecuritySchemes("JWT", new SecurityScheme()
                                 .name("Authorization")

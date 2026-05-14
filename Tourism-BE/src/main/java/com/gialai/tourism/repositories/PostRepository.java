@@ -42,7 +42,6 @@ public interface PostRepository extends JpaRepository<Post, String>, JpaSpecific
     long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
     long countByUpdatedAtBetweenAndCreatedAtBefore(LocalDateTime start, LocalDateTime end, LocalDateTime before);
 
-    // Sửa JPQL: dùng "Post" (tên entity) thay cho "posts" (tên bảng)
     @Query("SELECT COUNT(p) FROM Post p JOIN p.tags t WHERE t.id = :tagId AND p.status = :status")
     long countByTagsContainingAndStatus(@Param("tagId") String tagId, @Param("status") PostStatus status);
 
