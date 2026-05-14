@@ -6,23 +6,23 @@
 
 ### 1.1. General Rules
 
-* Class → noun: `PostService`
-* Method → verb: `createPost`
-* Boolean → is/has/can: `isApproved`, `isActive`
-* Do not abbreviate: không dùng `postSvc`, `usrRepo`
+- Class → noun: `PostService`
+- Method → verb: `createPost`
+- Boolean → is/has/can: `isApproved`, `isActive`
+- Do not abbreviate: không dùng `postSvc`, `usrRepo`
 
 ### 1.2. Class Naming
 
-|   | Type         | Naming                        | Example                    |
-|---|--------------|-------------------------------|----------------------------|
-| 1 | Controller   | `[Entity]Controller`          | `PostController`           |
-| 2 | Service      | `[Entity]Service`             | `PostService`              |
-| 3 | Repository   | `[Entity]Repository`          | `PostRepository`           |
-| 4 | Entity       | Singular                      | `Post`, `User`, `Tag`      |
-| 5 | Request DTO  | `Action + Entity + Request`   | `CreatePostRequest`        |
-| 6 | Response DTO | `Entity + Response`           | `PostResponse`, `UserResponse` |
-| 7 | Mapper       | `[Entity]Mapper`              | `PostMapper`               |
-| 8 | Exception    | `SomethingException`          | `PostNotFoundException`    |
+|     | Type         | Naming                      | Example                        |
+| --- | ------------ | --------------------------- | ------------------------------ |
+| 1   | Controller   | `[Entity]Controller`        | `PostController`               |
+| 2   | Service      | `[Entity]Service`           | `PostService`                  |
+| 3   | Repository   | `[Entity]Repository`        | `PostRepository`               |
+| 4   | Entity       | Singular                    | `Post`, `User`, `Tag`          |
+| 5   | Request DTO  | `Action + Entity + Request` | `CreatePostRequest`            |
+| 6   | Response DTO | `Entity + Response`         | `PostResponse`, `UserResponse` |
+| 7   | Mapper       | `[Entity]Mapper`            | `PostMapper`                   |
+| 8   | Exception    | `SomethingException`        | `PostNotFoundException`        |
 
 ### 1.3. Method Naming
 
@@ -76,38 +76,38 @@ post_images
 
 ### 2.1. Standard Endpoints
 
-|   | Action  | Method | Endpoint                |
-|---|---------|--------|-------------------------|
-| 1 | Get all | GET    | `/api/v1/posts`         |
-| 2 | Get one | GET    | `/api/v1/posts/{id}`    |
-| 3 | Create  | POST   | `/api/v1/posts`         |
-| 4 | Update  | PUT    | `/api/v1/posts/{id}`    |
-| 5 | Delete  | DELETE | `/api/v1/posts/{id}`    |
+|     | Action  | Method | Endpoint          |
+| --- | ------- | ------ | ----------------- |
+| 1   | Get all | GET    | `/api/posts`      |
+| 2   | Get one | GET    | `/api/posts/{id}` |
+| 3   | Create  | POST   | `/api/posts`      |
+| 4   | Update  | PUT    | `/api/posts/{id}` |
+| 5   | Delete  | DELETE | `/api/posts/{id}` |
 
 ### 2.2. Query & Nested Params
 
 ```
-GET /api/v1/posts?status=APPROVED
-GET /api/v1/posts?tags=LOCATION,CULTURE
-GET /api/v1/posts?keyword=thác+Phú+Cường
-GET /api/v1/posts?page=0&size=10&sort=createdAt,desc
-GET /api/v1/posts/{postId}/comments
-GET /api/v1/admin/posts?status=PENDING
+GET /api/posts?status=APPROVED
+GET /api/posts?tags=LOCATION,CULTURE
+GET /api/posts?keyword=thác+Phú+Cường
+GET /api/posts?page=0&size=10&sort=createdAt,desc
+GET /api/posts/{postId}/comments
+GET /api/admin/posts?status=PENDING
 ```
 
 ### 2.3. Special Actions
 
 ```
-POST /api/v1/auth/login
-POST /api/v1/auth/register
-POST /api/v1/auth/refresh-token
-POST /api/v1/auth/forgot-password
-POST /api/v1/auth/verify-otp
-PATCH /api/v1/admin/posts/{id}/approve
-PATCH /api/v1/admin/posts/{id}/reject
-POST  /api/v1/posts/{id}/like
-POST  /api/v1/posts/{id}/favorite
-PATCH /api/v1/notifications/{id}/read
+POST /api/auth/login
+POST /api/auth/register
+POST /api/auth/refresh-token
+POST /api/auth/forgot-password
+POST /api/auth/verify-otp
+PATCH /api/admin/posts/{id}/approve
+PATCH /api/admin/posts/{id}/reject
+POST  /api/posts/{id}/like
+POST  /api/posts/{id}/favorite
+PATCH /api/notifications/{id}/read
 ```
 
 ### 2.4. Response Format
@@ -117,7 +117,7 @@ PATCH /api/v1/notifications/{id}/read
   "code": 200,
   "status": "OK",
   "message": "Post list fetched successfully.",
-  "data": { }
+  "data": {}
 }
 ```
 
@@ -178,9 +178,9 @@ public class PostResponse {
 
 ### 3.4. Notes
 
-* Không dùng Entity làm response.
-* Không lộ các trường nhạy cảm (`password`, `refreshToken`).
-* Không dùng `Map<String, Object>` — phải dùng DTO cụ thể.
+- Không dùng Entity làm response.
+- Không lộ các trường nhạy cảm (`password`, `refreshToken`).
+- Không dùng `Map<String, Object>` — phải dùng DTO cụ thể.
 
 ---
 
@@ -188,11 +188,11 @@ public class PostResponse {
 
 Flow: **Controller → Service → Repository → Database**
 
-| Layer      | Trách nhiệm                                      |
-|------------|--------------------------------------------------|
-| Controller | Nhận request, validate input, trả response       |
+| Layer      | Trách nhiệm                                                 |
+| ---------- | ----------------------------------------------------------- |
+| Controller | Nhận request, validate input, trả response                  |
 | Service    | Business logic: duyệt bài, tính điểm nổi bật, gửi thông báo |
-| Repository | Chỉ truy vấn DB, không chứa logic               |
+| Repository | Chỉ truy vấn DB, không chứa logic                           |
 
 ---
 
@@ -245,7 +245,7 @@ public class GlobalExceptionHandler {
 ```json
 {
   "timestamp": "2026-05-09 10:00:00",
-  "path": "/api/v1/posts/post_abc123",
+  "path": "/api/posts/post_abc123",
   "code": 404,
   "status": "NOT_FOUND",
   "message": "Post 'post_abc123' not found"
@@ -282,9 +282,9 @@ public void approvePost(String postId, String adminId) {
 
 ### Rules
 
-* Bắt buộc phòng tránh N+1 query với `JOIN FETCH`.
-* Dùng `@Transactional` khi thao tác nhiều bảng cùng lúc (approve/reject + notification).
-* Đặt index trên các cột thường xuyên query: `status`, `created_at`, `author_id`.
+- Bắt buộc phòng tránh N+1 query với `JOIN FETCH`.
+- Dùng `@Transactional` khi thao tác nhiều bảng cùng lúc (approve/reject + notification).
+- Đặt index trên các cột thường xuyên query: `status`, `created_at`, `author_id`.
 
 ---
 
@@ -301,10 +301,11 @@ if (!post.getAuthor().getId().equals(currentUserId)) {
 ```
 
 **Rules:**
-* Không lưu mật khẩu dạng plain text.
-* Access token: thời hạn ngắn (15–30 phút).
-* Refresh token: thời hạn dài (7–30 ngày), lưu DB.
-* OTP: hết hạn sau 5 phút, giới hạn 5 lần gửi/ngày.
+
+- Không lưu mật khẩu dạng plain text.
+- Access token: thời hạn ngắn (15–30 phút).
+- Refresh token: thời hạn dài (7–30 ngày), lưu DB.
+- OTP: hết hạn sau 5 phút, giới hạn 5 lần gửi/ngày.
 
 ---
 
@@ -369,13 +370,13 @@ src/main/java/com/gialai/tourism/
 
 ## 11. Core Rules
 
-|   | Rule                                       | Giải thích                                         |
-|---|--------------------------------------------|----------------------------------------------------|
-| 1 | Controller không chứa business logic       | Chỉ nhận request, gọi service, trả response        |
-| 2 | Service là tầng cốt lõi                    | Toàn bộ logic: duyệt bài, tính điểm, phân quyền   |
-| 3 | Repository chỉ xử lý DB                   | Không chứa logic nghiệp vụ                         |
-| 4 | DTO tách biệt với Entity                   | Tránh lộ dữ liệu nội bộ                            |
-| 5 | Mapper xử lý chuyển đổi                    | Không mapping thủ công lặp lại trong service       |
-| 6 | Không expose Entity trong response         | Luôn dùng ResponseDTO                              |
-| 7 | Kiểm tra ownership trước mọi thao tác sửa/xóa | Tác giả chỉ được sửa/xóa bài của mình         |
-| 8 | Admin action phải log lại                  | Ghi lại ai duyệt/từ chối bài nào, lúc nào         |
+|     | Rule                                          | Giải thích                                      |
+| --- | --------------------------------------------- | ----------------------------------------------- |
+| 1   | Controller không chứa business logic          | Chỉ nhận request, gọi service, trả response     |
+| 2   | Service là tầng cốt lõi                       | Toàn bộ logic: duyệt bài, tính điểm, phân quyền |
+| 3   | Repository chỉ xử lý DB                       | Không chứa logic nghiệp vụ                      |
+| 4   | DTO tách biệt với Entity                      | Tránh lộ dữ liệu nội bộ                         |
+| 5   | Mapper xử lý chuyển đổi                       | Không mapping thủ công lặp lại trong service    |
+| 6   | Không expose Entity trong response            | Luôn dùng ResponseDTO                           |
+| 7   | Kiểm tra ownership trước mọi thao tác sửa/xóa | Tác giả chỉ được sửa/xóa bài của mình           |
+| 8   | Admin action phải log lại                     | Ghi lại ai duyệt/từ chối bài nào, lúc nào       |

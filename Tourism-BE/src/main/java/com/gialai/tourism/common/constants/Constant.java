@@ -40,4 +40,5 @@ public class Constant {
     public static final String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,50}$";
     public static final String PHONE_REGEX = "^\\d{4,20}$";
     public static final long MAX_FILE_SIZE_5MB = 5 * 1024 * 1024;
+    public static final String FULL_NAME_REGEX = "^(?=.{3,100}$)[a-zA-ZÀ-ỹ]+(?:[\\s][a-zA-ZÀ-ỹ]+)*$";
 }

@@ -2,6 +2,7 @@ package com.gialai.tourism.models.mappers;
 
 import com.gialai.tourism.models.entities.Role;
 import org.mapstruct.Mapper;
+import org.mapstruct.Named;
 
 import java.util.Collections;
 import java.util.Set;
@@ -28,5 +29,10 @@ public interface RoleMapper {
         return roles.stream()
                 .map(role -> role.getName().name())
                 .collect(Collectors.toSet());
+    }
+
+    @Named("mapRoleNames")
+    default Set<String> mapRoleNames(Set<Role> roles) {
+        return roles.stream().map(role -> role.getName().name()).collect(Collectors.toSet());
     }
 }

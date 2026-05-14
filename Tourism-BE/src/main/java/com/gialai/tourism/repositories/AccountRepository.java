@@ -41,4 +41,5 @@ public interface AccountRepository extends JpaRepository<Account, String>,
     Optional<Account> findByIdWithRoles(@Param("id") String id);
 
     long countByCreatedAtAfter(LocalDateTime date);
+    boolean existsByPhone(String phone);
 }

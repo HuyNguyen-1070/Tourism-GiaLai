@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Account extends BaseEntity implements UserDetails {
-
     @Column(nullable = false, columnDefinition = "NVARCHAR(100)")
     private String fullName;
 
@@ -45,12 +44,14 @@ public class Account extends BaseEntity implements UserDetails {
     @Column(name = "is_active")
     private boolean isActive;
 
+    @Column(columnDefinition = "VARCHAR(20)")
+    private String phone;
+
+    @Column(columnDefinition = "NVARCHAR(255)")
+    private String address;
+
     @ManyToMany
-    @JoinTable(
-            name = "accounts_roles",
-            joinColumns = @JoinColumn(name = "account_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+    @JoinTable(name = "accounts_roles", joinColumns = @JoinColumn(name = "account_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
     @Override
@@ -66,11 +67,22 @@ public class Account extends BaseEntity implements UserDetails {
     }
 
     @Override
-    public boolean isAccountNonExpired() { return true; }
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
     @Override
-    public boolean isAccountNonLocked() { return true; }
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
     @Override
-    public boolean isCredentialsNonExpired() { return true; }
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
     @Override
-    public boolean isEnabled() { return isActive; }
+    public boolean isEnabled() {
+        return isActive;
+    }
 }

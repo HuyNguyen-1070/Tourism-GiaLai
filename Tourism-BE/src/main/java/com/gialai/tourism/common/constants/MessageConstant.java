@@ -17,8 +17,12 @@ public class MessageConstant {
     public static final String RESET_PASSWORD_SUCCESS = "Password has been reset successfully.";
     public static final String TOKEN_REFRESH_SUCCESS = "Token refreshed successfully";
     public static final String UPDATE_PASSWORD_SUCCESS = "Password updated successfully";
+    public static final String UPDATE_PROFILE_SUCCESS = "Profile updated successfully";
+    public static final String UPDATE_AVATAR_SUCCESS = "Avatar updated successfully";
     public static final String DELETED_ACCOUNT_SUCCESS = "Account deleted successfully";
     public static final String PAGE_MIN = "Page index must be zero or greater.";
     public static final String PAGE_SIZE_MAX = "Page size must not exceed 100.";
+    public static final String INVALID_FULL_NAME = "Full name must be 3-100 characters, no special characters.";
+    public static final String ADDRESS_MAX_LENGTH = "Address must not exceed 255 characters.";
 }
 
