@@ -3,16 +3,15 @@ export enum Role {
   USER = 'USER',
 }
 
-export interface Account {
-  id: string;
-  email: string;
-  roles: Role[];
-}
-
 export interface User {
   id: string;
+  fullName: string;
+  username: string;
   email: string;
-  role: 'user';
+  avatar?: string;
+  phone?: string;
+  address?: string;
+  roles: Role[];
 }
 
 export interface LoginRequest {
@@ -25,6 +24,7 @@ export interface RegisterRequest {
   username: string;
   email: string;
   password: string;
+  confirmPassword?: string;
 }
 
 export interface ForgotPasswordRequest {
@@ -40,7 +40,6 @@ export interface ResetPasswordRequest {
 export interface LoginResponse {
   token: string;
   type: string;
-  userId: number;
   username: string;
   role: string;
 }

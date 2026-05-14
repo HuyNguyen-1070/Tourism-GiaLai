@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TOKEN_KEY, USER_KEY } from '@/utils/constants';
+import { User } from '@/types/auth';
 
 interface AuthState {
   isAuthenticated: boolean;
-  user: { userId: number; username: string; role: string } | null;
+  user: User | null;
   token: string | null;
 }
 
@@ -30,8 +31,7 @@ const loadFromStorage = (): AuthState => {
       }
 
       return { isAuthenticated: true, user, token };
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {
+    } catch {
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
     }
@@ -45,7 +45,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setCredentials: (state, action: PayloadAction<{ token: string; user: AuthState['user'] }>) => {
+    setCredentials: (state, action: PayloadAction<{ token: string; user: User }>) => {
       state.isAuthenticated = true;
       state.token = action.payload.token;
       state.user = action.payload.user;
@@ -59,8 +59,14 @@ const authSlice = createSlice({
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
     },
+    updateUserInfo: (state, action: PayloadAction<Partial<User>>) => {
+      if (state.user) {
+        state.user = { ...state.user, ...action.payload };
+        localStorage.setItem(USER_KEY, JSON.stringify(state.user));
+      }
+    },
   },
 });
 
-export const { setCredentials, logout } = authSlice.actions;
+export const { setCredentials, logout, updateUserInfo } = authSlice.actions;
 export default authSlice.reducer;
