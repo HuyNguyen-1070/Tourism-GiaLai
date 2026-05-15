@@ -9,7 +9,7 @@ public enum ErrorCode {
     // === Authentication & Authorization ===
     UNAUTHENTICATED("Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED("You do not have permission", HttpStatus.FORBIDDEN),
-    INVALID_CREDENTIALS("Email or password is incorrect", HttpStatus.UNAUTHORIZED),
+    INVALID_CREDENTIALS("Username or password is incorrect", HttpStatus.UNAUTHORIZED),
     ACCOUNT_LOCKED("Your account is locked", HttpStatus.UNAUTHORIZED),
     UNVERIFIED_ACCOUNT("Account is not verified", HttpStatus.UNAUTHORIZED),
     INVALID_TOKEN("Refresh Token is invalid or expired", HttpStatus.UNAUTHORIZED),
