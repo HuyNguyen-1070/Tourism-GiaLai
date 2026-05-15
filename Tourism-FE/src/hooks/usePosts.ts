@@ -1,7 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { postApi } from '@/services/api/postApi';
-import { Post, CreatePostPayload, UpdatePostPayload } from '@/types/post';
+import { Post, CreatePostPayload, UpdatePostPayload, PostListResponse } from '@/types/post';
 import { useToast } from '@/components/common/ToastNotification';
+
+interface ApiResponse<T> {
+  code: number;
+  status: string;
+  message: string;
+  data: T;
+}
 
 const getErrorMessage = (error: unknown, fallback: string) => {
   if (error instanceof Error) return error.message;
@@ -34,12 +41,14 @@ export const usePosts = (initialPage = 0, initialSize = 10) => {
           status,
           keyword,
         });
-        setPosts(res.data.content);
+        const apiResponse = res.data as unknown as ApiResponse<PostListResponse>;
+        const responseData = apiResponse.data;
+        setPosts(responseData.content || []);
         setPagination({
-          page: res.data.page,
-          size: res.data.size,
-          totalElements: res.data.totalElements,
-          totalPages: res.data.totalPages,
+          page: responseData.page,
+          size: responseData.size,
+          totalElements: responseData.totalElements,
+          totalPages: responseData.totalPages,
         });
         setError(null);
       } catch (err: unknown) {
@@ -87,7 +96,8 @@ export const usePostDetail = (postId: string) => {
     setLoading(true);
     try {
       const res = await postApi.getPostById(postId);
-      setPost(res.data);
+      const apiResponse = res.data as unknown as ApiResponse<Post>;
+      setPost(apiResponse.data || null);
       setError(null);
     } catch (err: unknown) {
       const message = getErrorMessage(err, 'Không thể tải bài viết');
@@ -114,8 +124,9 @@ export const useCreatePost = () => {
       setLoading(true);
       try {
         const res = await postApi.createPost(data);
+        const apiResponse = res.data as unknown as ApiResponse<Post>;
         showToast('Bài viết đã được gửi và đang chờ duyệt', 'success');
-        return res.data;
+        return apiResponse.data;
       } catch (err: unknown) {
         const message = getErrorMessage(err, 'Đăng bài thất bại');
         showToast(message, 'error');
@@ -139,8 +150,9 @@ export const useUpdatePost = () => {
       setLoading(true);
       try {
         const res = await postApi.updatePost(postId, data);
+        const apiResponse = res.data as unknown as ApiResponse<Post>;
         showToast('Cập nhật bài viết thành công, bài viết sẽ được duyệt lại', 'success');
-        return res.data;
+        return apiResponse.data;
       } catch (err: unknown) {
         const message = getErrorMessage(err, 'Cập nhật thất bại');
         showToast(message, 'error');

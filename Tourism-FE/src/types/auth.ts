@@ -3,6 +3,15 @@ export enum Role {
   USER = 'USER',
 }
 
+export interface Account {
+  id: string;
+  email: string;
+  roles: Role[];
+  fullName?: string;
+  username?: string;
+  avatar?: string;
+}
+
 export interface User {
   id: string;
   fullName: string;
@@ -24,7 +33,7 @@ export interface RegisterRequest {
   username: string;
   email: string;
   password: string;
-  confirmPassword?: string;
+  confirmPassword: string;
 }
 
 export interface ForgotPasswordRequest {
@@ -38,16 +47,30 @@ export interface ResetPasswordRequest {
 }
 
 export interface LoginResponse {
-  token: string;
-  type: string;
-  username: string;
-  role: string;
+  accessToken: string;
+  refreshToken: string;
+  account: Account;
+}
+
+export interface RefreshTokenResponse {
+  accessToken: string;
+  refreshToken: string;
 }
 
 export interface ApiResponse<T = unknown> {
-  success: boolean;
+  code: number;
+  status: string;
   message: string;
   data?: T;
+}
+
+export interface VerifyRegistrationPayload {
+  email: string;
+  otp: string;
+}
+
+export interface ResendCodePayload {
+  email: string;
 }
 
 export interface AuthVerificationProps {

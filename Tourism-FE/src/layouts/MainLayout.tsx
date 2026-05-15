@@ -2,11 +2,11 @@ import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 
 export const MainLayout = () => {
-  const { user, logoutUser } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    await logoutUser();
+    await logout();
     navigate('/login');
   };
 

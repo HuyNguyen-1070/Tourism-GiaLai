@@ -2,13 +2,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useAuth } from '@/hooks/useAuth';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Footer } from '@/components/common/Footer/Footer';
 
 const loginSchema = z.object({
-  username: z.string().min(1, 'Vui lòng nhập tên đăng nhập hoặc email'),
+  username: z.string().min(1, 'Vui lòng nhập tên đăng nhập'),
   password: z.string().min(1, 'Vui lòng nhập mật khẩu'),
 });
 
@@ -31,12 +30,14 @@ export const Login = () => {
   });
 
   useEffect(() => {
-    if (isAuthenticated) navigate('/');
+    if (isAuthenticated) navigate('/dashboard');
   }, [isAuthenticated, navigate]);
 
   useEffect(() => {
     if (location.state?.passwordReset) {
       setSuccessMessage('Mật khẩu đã được đặt lại thành công! Vui lòng đăng nhập.');
+    } else if (location.state?.registered) {
+      setSuccessMessage('Đăng ký thành công! Vui lòng đăng nhập bằng username.');
     }
   }, [location.state]);
 
@@ -84,7 +85,6 @@ export const Login = () => {
 
         {/* Right Side: Login Form */}
         <section className="lg:col-span-5 flex flex-col justify-center items-center px-margin-mobile md:px-margin-desktop py-12 bg-mist-beige relative overflow-hidden">
-          {/* Mobile Brand Logo */}
           <div className="lg:hidden absolute top-8 left-margin-mobile">
             <span className="font-headline-lg text-headline-lg text-forest-leaf italic">
               Gia Lai Heritage
@@ -95,11 +95,10 @@ export const Login = () => {
             <header className="space-y-2">
               <h2 className="font-headline-lg text-headline-lg text-basalt-soil">Sign In</h2>
               <p className="font-body-md text-body-md text-on-surface-variant">
-                Welcome back. Please enter your details to continue your journey.
+                Welcome back. Please enter your username and password.
               </p>
             </header>
 
-            {/* Success message from password reset */}
             {successMessage && (
               <div className="flex items-center gap-3 p-4 bg-primary-fixed rounded-lg border border-forest-leaf/20">
                 <span
@@ -119,14 +118,12 @@ export const Login = () => {
                     className="font-label-md text-label-md text-on-surface-variant ml-1"
                     htmlFor="username"
                   >
-                    Username or Email
+                    Username
                   </label>
                   <input
-                    className={`w-full px-4 py-3 rounded-lg bg-surface-container-lowest border focus:border-forest-leaf focus:ring-1 focus:ring-forest-leaf outline-none transition-all placeholder:text-outline-variant font-body-md text-on-surface ${
-                      errors.username ? 'border-error' : 'border-outline/20'
-                    }`}
+                    className={`w-full px-4 py-3 rounded-lg bg-surface-container-lowest border focus:border-forest-leaf focus:ring-1 focus:ring-forest-leaf outline-none transition-all placeholder:text-outline-variant font-body-md text-on-surface ${errors.username ? 'border-error' : 'border-outline/20'}`}
                     id="username"
-                    placeholder="Enter your identity"
+                    placeholder="Enter your username"
                     type="text"
                     {...register('username')}
                   />
@@ -144,9 +141,7 @@ export const Login = () => {
                   </label>
                   <div className="relative">
                     <input
-                      className={`w-full px-4 py-3 rounded-lg bg-surface-container-lowest border focus:border-forest-leaf focus:ring-1 focus:ring-forest-leaf outline-none transition-all placeholder:text-outline-variant font-body-md text-on-surface ${
-                        errors.password ? 'border-error' : 'border-outline/20'
-                      }`}
+                      className={`w-full px-4 py-3 rounded-lg bg-surface-container-lowest border focus:border-forest-leaf focus:ring-1 focus:ring-forest-leaf outline-none transition-all placeholder:text-outline-variant font-body-md text-on-surface ${errors.password ? 'border-error' : 'border-outline/20'}`}
                       id="password"
                       placeholder="••••••••"
                       type={showPassword ? 'text' : 'password'}
@@ -194,7 +189,7 @@ export const Login = () => {
               )}
 
               <button
-                className="w-full bg-forest-leaf text-white py-4 rounded-lg font-label-md text-label-md shadow-lg shadow-forest-leaf/20 hover:bg-primary transition-all active:scale-[0.98] flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-forest-leaf text-white py-4 rounded-lg font-label-md text-label-md shadow-lg shadow-forest-leaf/20 hover:bg-primary transition-all active:scale-[0.98] flex items-center justify-center space-x-2 disabled:opacity-50"
                 type="submit"
                 disabled={isSubmitting}
               >
@@ -214,7 +209,6 @@ export const Login = () => {
               </button>
             </form>
 
-            {/* Divider */}
             <div className="relative flex items-center justify-center py-4">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-outline/10" />
@@ -224,7 +218,6 @@ export const Login = () => {
               </span>
             </div>
 
-            {/* Social Sign In */}
             <div className="grid grid-cols-2 gap-4">
               <button className="flex items-center justify-center space-x-3 border border-outline/20 bg-surface-container-lowest py-3 px-4 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-white hover:border-forest-leaf transition-all">
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -263,7 +256,6 @@ export const Login = () => {
             </p>
           </div>
 
-          {/* Decorative footer */}
           <div className="absolute bottom-0 left-0 w-full h-24 overflow-hidden opacity-20 pointer-events-none">
             <div className="flex space-x-4 justify-center items-end h-full">
               <span className="material-symbols-outlined text-basalt-soil text-[48px]">
@@ -277,8 +269,6 @@ export const Login = () => {
           </div>
         </section>
       </main>
-
-      {/* Footer */}
       <Footer />
     </div>
   );

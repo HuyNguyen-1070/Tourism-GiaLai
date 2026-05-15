@@ -3,7 +3,7 @@ import { RootState, AppDispatch } from '@/store/store';
 import { setCredentials, logout } from '@/store/slices/authSlice';
 import { authApi } from '@/services/api/authApi';
 import { useNavigate } from 'react-router-dom';
-import { RegisterRequest } from '@/types/auth';
+import { RegisterRequest, User, Role } from '@/types/auth';
 
 interface ErrorResponse {
   response?: {
@@ -16,18 +16,30 @@ interface ErrorResponse {
 export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { isAuthenticated, user, token } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, account, accessToken, refreshToken } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   const login = async (username: string, password: string) => {
     try {
       const response = await authApi.login({ username, password });
-      const { token, userId, username: userName, role } = response.data;
-      dispatch(
-        setCredentials({
-          token,
-          user: { userId, username: userName, role },
-        })
-      );
+      const loginData = response.data.data;
+      if (!loginData) throw new Error('Invalid response structure');
+
+      const { accessToken, refreshToken, account: accountDto } = loginData;
+
+      const user: User = {
+        id: accountDto.id,
+        fullName: accountDto.fullName || '',
+        username: accountDto.username || username,
+        email: accountDto.email,
+        avatar: accountDto.avatar,
+        roles: accountDto.roles as Role[],
+        phone: '',
+        address: '',
+      };
+
+      dispatch(setCredentials({ accessToken, refreshToken, account: user }));
       return { success: true };
     } catch (error: unknown) {
       const err = error as ErrorResponse;
@@ -44,18 +56,29 @@ export const useAuth = () => {
       return { success: true };
     } catch (error: unknown) {
       const err = error as ErrorResponse;
+      const errorData = err.response?.data;
+      let errorMessage = 'Đăng ký thất bại';
+      if (errorData) {
+        if (typeof errorData.message === 'string') {
+          errorMessage = errorData.message;
+        } else if (errorData.message && typeof errorData.message === 'object') {
+          const firstKey = Object.keys(errorData.message)[0];
+          errorMessage = errorData.message[firstKey] || 'Đăng ký thất bại';
+        }
+      }
       return {
         success: false,
-        message: err.response?.data?.message || 'Đăng ký thất bại',
+        message: errorMessage,
       };
     }
   };
 
   const logoutUser = async () => {
     try {
-      await authApi.logout();
-    } catch {
-      // ignore
+      const currentRefreshToken = refreshToken;
+      if (currentRefreshToken) await authApi.logout(currentRefreshToken);
+    } catch (error) {
+      console.error('Logout API error:', error);
     } finally {
       dispatch(logout());
       navigate('/login');
@@ -75,9 +98,17 @@ export const useAuth = () => {
     }
   };
 
-  const verifyOtp = async (email: string, otp: string) => {
+  const verifyOtp = async (
+    email: string,
+    otp: string,
+    type: 'register' | 'forgot-password' = 'forgot-password'
+  ) => {
     try {
-      await authApi.verifyCode({ email, otp });
+      if (type === 'register') {
+        await authApi.verifyRegistration({ email, otp });
+      } else {
+        await authApi.verifyCode({ email, otp });
+      }
       return { success: true };
     } catch (error: unknown) {
       const err = error as ErrorResponse;
@@ -88,9 +119,9 @@ export const useAuth = () => {
     }
   };
 
-  const resetPassword = async (email: string, newPassword: string) => {
+  const resetPassword = async (email: string, otp: string, newPassword: string) => {
     try {
-      await authApi.resetPassword({ email, newPassword });
+      await authApi.resetPassword({ email, otp, newPassword });
       return { success: true };
     } catch (error: unknown) {
       const err = error as ErrorResponse;
@@ -101,15 +132,31 @@ export const useAuth = () => {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const resendCode = async (email: string, _type: 'register' | 'forgot-password') => {
+    try {
+      await authApi.forgotPassword({ email });
+      return { success: true };
+    } catch (error: unknown) {
+      const err = error as ErrorResponse;
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Gửi lại mã thất bại',
+      };
+    }
+  };
+
   return {
     isAuthenticated,
-    user,
-    token,
+    user: account,
+    accessToken,
+    refreshToken,
     login,
     register,
-    logoutUser,
+    logout: logoutUser,
     forgotPassword,
     verifyOtp,
     resetPassword,
+    resendCode,
   };
 };

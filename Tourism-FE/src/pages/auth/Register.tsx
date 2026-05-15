@@ -1,10 +1,11 @@
-import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { useForm, UseFormRegister } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate, Link } from 'react-router-dom';
-import { useState } from 'react';
 import { AuthLayout } from '@/layouts/AuthLayout';
+import { VerificationCode } from '@/components/common/VerificationCodeComponent';
 
 const registerSchema = z
   .object({
@@ -21,20 +22,21 @@ const registerSchema = z
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
+interface InputFieldProps {
+  label: string;
+  error?: string;
+  type?: string;
+  placeholder?: string;
+  registration: ReturnType<UseFormRegister<RegisterFormValues>>;
+}
+
 const InputField = ({
   label,
   error,
   type = 'text',
   placeholder,
   registration,
-}: {
-  label: string;
-  error?: string;
-  type?: string;
-  placeholder?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  registration: any;
-}) => (
+}: InputFieldProps) => (
   <div className="flex flex-col mb-4">
     <label className="font-label-md text-label-md text-on-surface-variant mb-1">{label}</label>
     <input
@@ -52,8 +54,9 @@ const InputField = ({
 export const Register = () => {
   const { register: registerUser } = useAuth();
   const navigate = useNavigate();
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState<string>('');
+  const [step, setStep] = useState<'register' | 'verify'>('register');
+  const [registeredEmail, setRegisteredEmail] = useState('');
 
   const {
     register,
@@ -77,25 +80,49 @@ export const Register = () => {
     if (score === 3) return { label: 'Mạnh', width: '75%', color: 'bg-forest-leaf' };
     return { label: 'Rất mạnh', width: '100%', color: 'bg-forest-leaf' };
   };
-
   const strength = getPasswordStrength(passwordValue);
 
   const onSubmit = async (data: RegisterFormValues) => {
     setError('');
-    setSuccess('');
-    const result = await registerUser({
+    const result = (await registerUser({
       fullName: data.fullName,
       username: data.username,
       email: data.email,
       password: data.password,
-    });
+      confirmPassword: data.confirmPassword,
+    })) as { success: boolean; message?: string | Record<string, string> };
     if (result.success) {
-      setSuccess('Đăng ký thành công! Đang chuyển hướng...');
-      setTimeout(() => navigate('/login'), 2000);
+      setRegisteredEmail(data.email);
+      setStep('verify');
     } else {
-      setError(result.message || 'Đăng ký thất bại');
+      let errorMsg = 'Đăng ký thất bại';
+      const msg = result.message;
+      if (typeof msg === 'string') {
+        errorMsg = msg;
+      } else if (msg && typeof msg === 'object') {
+        const errorObj = msg as Record<string, string>;
+        errorMsg = errorObj.confirmPassword || Object.values(errorObj)[0] || errorMsg;
+      }
+      setError(errorMsg);
     }
   };
+
+  const handleVerified = () => {
+    navigate('/login', { state: { registered: true } });
+  };
+
+  if (step === 'verify') {
+    return (
+      <AuthLayout title="Xác thực email" subtitle="Vui lòng kiểm tra hộp thư đến của bạn.">
+        <VerificationCode
+          email={registeredEmail}
+          type="register"
+          onVerified={handleVerified}
+          onBack={() => setStep('register')}
+        />
+      </AuthLayout>
+    );
+  }
 
   return (
     <AuthLayout
@@ -125,7 +152,6 @@ export const Register = () => {
           error={errors.email?.message}
         />
 
-        {/* Password with strength indicator */}
         <div className="flex flex-col mb-4">
           <label className="font-label-md text-label-md text-on-surface-variant mb-1">
             Password
@@ -175,20 +201,12 @@ export const Register = () => {
             <p className="text-error text-sm">{error}</p>
           </div>
         )}
-        {success && (
-          <div className="flex items-center gap-2 p-3 bg-primary-fixed rounded-lg">
-            <span className="material-symbols-outlined text-forest-leaf text-[18px]">
-              check_circle
-            </span>
-            <p className="text-forest-leaf text-sm font-medium">{success}</p>
-          </div>
-        )}
 
         <div className="pt-2">
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-forest-leaf text-white font-label-md text-label-md py-4 rounded-lg shadow-md hover:bg-primary transition-all active:scale-95 flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-forest-leaf text-white font-label-md text-label-md py-4 rounded-lg shadow-md hover:bg-primary transition-all active:scale-95 flex justify-center items-center gap-2 disabled:opacity-50"
           >
             {isSubmitting ? (
               <>

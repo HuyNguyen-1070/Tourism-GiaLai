@@ -26,9 +26,7 @@ type PasswordFormValues = z.infer<typeof passwordSchema>;
 
 const TransactionalLayout = ({ children }: { children: React.ReactNode }) => (
   <div className="bg-mist-beige text-on-surface font-body-md overflow-x-hidden min-h-screen flex flex-col">
-    {/* Header */}
     <Header showBackButton backTo="/login" />
-
     <main
       className="flex-grow flex items-center justify-center pt-28 pb-12 px-margin-mobile"
       style={{
@@ -39,8 +37,6 @@ const TransactionalLayout = ({ children }: { children: React.ReactNode }) => (
     >
       {children}
     </main>
-
-    {/* Decorative fixed element */}
     <div className="fixed bottom-0 right-0 p-16 opacity-10 pointer-events-none hidden lg:block">
       <div className="w-48 h-48 rounded-full border-2 border-dashed border-forest-leaf flex items-center justify-center">
         <span className="material-symbols-outlined text-[64px] text-forest-leaf">
@@ -48,8 +44,6 @@ const TransactionalLayout = ({ children }: { children: React.ReactNode }) => (
         </span>
       </div>
     </div>
-
-    {/* Footer */}
     <footer className="w-full py-8 px-margin-desktop border-t border-secondary/10 bg-surface-container-highest">
       <div className="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
         <div className="flex flex-col items-center md:items-start gap-1">
@@ -84,6 +78,7 @@ export const ForgotPassword = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [email, setEmail] = useState('');
+  const [otpCode, setOtpCode] = useState('');
   const [error, setError] = useState('');
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -106,10 +101,14 @@ export const ForgotPassword = () => {
     }
   };
 
-  const handleOtpVerified = () => setStep(3);
+  const handleOtpVerified = (otp: string) => {
+    setOtpCode(otp);
+    setStep(3);
+  };
   const handleBackFromOtp = () => {
     setStep(1);
     setEmail('');
+    setOtpCode('');
   };
 
   // Step 3: new password form
@@ -119,7 +118,6 @@ export const ForgotPassword = () => {
     watch,
     formState: { errors: passwordErrors, isSubmitting: isPasswordSubmitting },
   } = useForm<PasswordFormValues>({ resolver: zodResolver(passwordSchema) });
-
   const newPwdValue = watch('newPassword', '');
   const getStrengthColor = (pwd: string) => {
     if (pwd.length < 6) return 'bg-error';
@@ -129,7 +127,7 @@ export const ForgotPassword = () => {
 
   const onPasswordSubmit = async (data: PasswordFormValues) => {
     setError('');
-    const result = await resetPassword(email, data.newPassword);
+    const result = await resetPassword(email, otpCode, data.newPassword);
     if (result.success) {
       navigate('/login', { state: { passwordReset: true } });
     } else {
@@ -137,7 +135,6 @@ export const ForgotPassword = () => {
     }
   };
 
-  // Step indicator
   const steps = [
     { num: 1, label: 'Email' },
     { num: 2, label: 'Xác thực' },
@@ -147,7 +144,6 @@ export const ForgotPassword = () => {
   return (
     <TransactionalLayout>
       <div className="w-full max-w-lg bg-surface-container-lowest p-10 md:p-12 rounded-xl shadow-sm border border-secondary/10 relative overflow-hidden">
-        {/* Decorative motif */}
         <div className="absolute top-0 right-0 w-32 h-32 opacity-5 pointer-events-none">
           <svg fill="none" stroke="currentColor" viewBox="0 0 100 100" className="text-forest-leaf">
             <circle cx="50" cy="50" r="45" strokeDasharray="2 4" />
@@ -161,13 +157,7 @@ export const ForgotPassword = () => {
             <div key={s.num} className="flex items-center">
               <div className="flex flex-col items-center">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center font-label-md text-label-md transition-all ${
-                    step > s.num
-                      ? 'bg-forest-leaf text-white'
-                      : step === s.num
-                        ? 'bg-forest-leaf text-white ring-4 ring-forest-leaf/20'
-                        : 'bg-surface-container text-outline'
-                  }`}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center font-label-md text-label-md transition-all ${step > s.num ? 'bg-forest-leaf text-white' : step === s.num ? 'bg-forest-leaf text-white ring-4 ring-forest-leaf/20' : 'bg-surface-container text-outline'}`}
                 >
                   {step > s.num ? (
                     <span className="material-symbols-outlined text-[16px]">check</span>
@@ -176,25 +166,20 @@ export const ForgotPassword = () => {
                   )}
                 </div>
                 <span
-                  className={`text-[10px] mt-1 font-label-sm ${
-                    step >= s.num ? 'text-forest-leaf' : 'text-outline-variant'
-                  }`}
+                  className={`text-[10px] mt-1 font-label-sm ${step >= s.num ? 'text-forest-leaf' : 'text-outline-variant'}`}
                 >
                   {s.label}
                 </span>
               </div>
               {i < steps.length - 1 && (
                 <div
-                  className={`w-16 h-0.5 mx-2 mb-4 transition-all ${
-                    step > s.num ? 'bg-forest-leaf' : 'bg-outline-variant'
-                  }`}
+                  className={`w-16 h-0.5 mx-2 mb-4 transition-all ${step > s.num ? 'bg-forest-leaf' : 'bg-outline-variant'}`}
                 />
               )}
             </div>
           ))}
         </div>
 
-        {/* Step 1: Email */}
         {step === 1 && (
           <div className="space-y-8">
             <div className="text-center space-y-3">
@@ -209,7 +194,6 @@ export const ForgotPassword = () => {
                 your account.
               </p>
             </div>
-
             <form onSubmit={handleEmailSubmit(onEmailSubmit)} className="space-y-6">
               <div className="space-y-2">
                 <label className="font-label-md text-label-md text-on-surface-variant block">
@@ -220,9 +204,7 @@ export const ForgotPassword = () => {
                     mail
                   </span>
                   <input
-                    className={`w-full pl-12 pr-4 py-3.5 bg-surface-container-low border rounded-lg focus:ring-2 focus:ring-forest-leaf focus:border-forest-leaf outline-none transition-all font-body-md ${
-                      emailErrors.email ? 'border-error' : 'border-outline-variant'
-                    }`}
+                    className={`w-full pl-12 pr-4 py-3.5 bg-surface-container-low border rounded-lg focus:ring-2 focus:ring-forest-leaf focus:border-forest-leaf outline-none transition-all font-body-md ${emailErrors.email ? 'border-error' : 'border-outline-variant'}`}
                     placeholder="name@example.com"
                     type="email"
                     {...registerEmail('email')}
@@ -232,14 +214,12 @@ export const ForgotPassword = () => {
                   <p className="text-error text-xs">{emailErrors.email.message}</p>
                 )}
               </div>
-
               {error && (
                 <div className="flex items-center gap-2 p-3 bg-error-container rounded-lg">
                   <span className="material-symbols-outlined text-error text-[18px]">error</span>
                   <p className="text-error text-sm">{error}</p>
                 </div>
               )}
-
               <button
                 type="submit"
                 disabled={isEmailSubmitting}
@@ -247,15 +227,17 @@ export const ForgotPassword = () => {
               >
                 {isEmailSubmitting ? (
                   <>
+                    {' '}
                     <span className="material-symbols-outlined text-[18px] animate-spin">
                       progress_activity
-                    </span>
-                    Sending...
+                    </span>{' '}
+                    Sending...{' '}
                   </>
                 ) : (
                   <>
-                    Send Verification Code
-                    <span className="material-symbols-outlined">send</span>
+                    {' '}
+                    Send Verification Code{' '}
+                    <span className="material-symbols-outlined">send</span>{' '}
                   </>
                 )}
               </button>
@@ -263,16 +245,15 @@ export const ForgotPassword = () => {
           </div>
         )}
 
-        {/* Step 2: OTP */}
         {step === 2 && (
           <VerificationCode
             email={email}
+            type="forgot-password"
             onVerified={handleOtpVerified}
             onBack={handleBackFromOtp}
           />
         )}
 
-        {/* Step 3: New Password */}
         {step === 3 && (
           <div className="space-y-8">
             <div className="text-center space-y-3">
@@ -284,9 +265,7 @@ export const ForgotPassword = () => {
                 Secure your account with a new password to continue exploring the Highlands.
               </p>
             </div>
-
             <form onSubmit={handlePasswordSubmit(onPasswordSubmit)} className="space-y-5">
-              {/* New Password */}
               <div className="space-y-2">
                 <label className="font-label-md text-label-md text-on-surface-variant block">
                   New Password
@@ -296,9 +275,7 @@ export const ForgotPassword = () => {
                     lock
                   </span>
                   <input
-                    className={`w-full pl-10 pr-10 py-3 bg-surface-container-low border rounded-lg focus:border-forest-leaf focus:ring-1 focus:ring-forest-leaf transition-all placeholder:text-outline-variant outline-none font-body-md ${
-                      passwordErrors.newPassword ? 'border-error' : 'border-outline-variant'
-                    }`}
+                    className={`w-full pl-10 pr-10 py-3 bg-surface-container-low border rounded-lg focus:border-forest-leaf focus:ring-1 focus:ring-forest-leaf transition-all placeholder:text-outline-variant outline-none font-body-md ${passwordErrors.newPassword ? 'border-error' : 'border-outline-variant'}`}
                     placeholder="••••••••"
                     type={showNewPassword ? 'text' : 'password'}
                     {...registerPassword('newPassword')}
@@ -333,7 +310,6 @@ export const ForgotPassword = () => {
                 )}
               </div>
 
-              {/* Security requirements */}
               <div className="p-4 bg-surface-container rounded-lg space-y-2 border border-secondary/5">
                 <p className="font-label-sm text-label-sm text-on-surface-variant mb-3 uppercase tracking-wider">
                   Security Requirements
@@ -362,7 +338,6 @@ export const ForgotPassword = () => {
                 ))}
               </div>
 
-              {/* Confirm Password */}
               <div className="space-y-2">
                 <label className="font-label-md text-label-md text-on-surface-variant block">
                   Confirm New Password
@@ -372,9 +347,7 @@ export const ForgotPassword = () => {
                     lock_reset
                   </span>
                   <input
-                    className={`w-full pl-10 pr-10 py-3 bg-surface-container-low border rounded-lg focus:border-forest-leaf focus:ring-1 focus:ring-forest-leaf transition-all placeholder:text-outline-variant outline-none font-body-md ${
-                      passwordErrors.confirmPassword ? 'border-error' : 'border-outline-variant'
-                    }`}
+                    className={`w-full pl-10 pr-10 py-3 bg-surface-container-low border rounded-lg focus:border-forest-leaf focus:ring-1 focus:ring-forest-leaf transition-all placeholder:text-outline-variant outline-none font-body-md ${passwordErrors.confirmPassword ? 'border-error' : 'border-outline-variant'}`}
                     placeholder="••••••••"
                     type={showConfirmPassword ? 'text' : 'password'}
                     {...registerPassword('confirmPassword')}
@@ -408,15 +381,19 @@ export const ForgotPassword = () => {
               >
                 {isPasswordSubmitting ? (
                   <>
+                    {' '}
                     <span className="material-symbols-outlined text-[18px] animate-spin">
                       progress_activity
-                    </span>
-                    Resetting...
+                    </span>{' '}
+                    Resetting...{' '}
                   </>
                 ) : (
                   <>
-                    Reset Password
-                    <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+                    {' '}
+                    Reset Password{' '}
+                    <span className="material-symbols-outlined text-[20px]">
+                      arrow_forward
+                    </span>{' '}
                   </>
                 )}
               </button>
@@ -426,8 +403,8 @@ export const ForgotPassword = () => {
                   to="/login"
                   className="font-label-md text-label-md text-forest-leaf hover:underline transition-all inline-flex items-center gap-1"
                 >
-                  <span className="material-symbols-outlined text-[18px]">chevron_left</span>
-                  Return to Login
+                  <span className="material-symbols-outlined text-[18px]">chevron_left</span> Return
+                  to Login
                 </Link>
               </div>
             </form>
