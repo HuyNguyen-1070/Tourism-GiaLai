@@ -24,6 +24,7 @@ public class HomepagePostResponse {
     private long likeCount;
     private long favoriteCount;
     private double averageRating;
+    private String status;
     private long engagementScore;
     private LocalDateTime createdAt;
 }

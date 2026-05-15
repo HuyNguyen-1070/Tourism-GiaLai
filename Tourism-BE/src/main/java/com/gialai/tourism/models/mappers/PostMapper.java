@@ -26,6 +26,7 @@ public abstract class PostMapper {
 
     @Mapping(target = "authorUsername", source = "author.username")
     @Mapping(target = "favoritedAt", ignore = true)
+    @Mapping(target = "thumbnail", expression = "java(post.getImages() != null && !post.getImages().isEmpty() ? post.getImages().get(0) : null)")
     public abstract PostSummaryResponse toSummary(Post post);
 
     @BeanMapping(ignoreByDefault = true)

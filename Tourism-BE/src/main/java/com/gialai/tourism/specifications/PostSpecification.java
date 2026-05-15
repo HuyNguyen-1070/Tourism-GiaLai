@@ -21,6 +21,7 @@ public class PostSpecification {
     public static Specification<Post> hasTags(List<String> tagNames) {
         return (root, query, cb) -> {
             if (tagNames == null || tagNames.isEmpty()) return cb.conjunction();
+            query.distinct(true);
             Join<Object, Object> tags = root.join("tags");
             return tags.get("name").in(tagNames);
         };

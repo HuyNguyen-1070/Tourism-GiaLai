@@ -1,5 +1,10 @@
 import { MainLayout as Layout } from '@/layouts/MainLayout';
-import { Dashboard } from '@/pages/home/Dashboard';
+import { AdminLayout } from '@/layouts/AdminLayout';
+import { HomePage } from '@/pages/home/HomePage';
+import { HistoryPage } from '@/pages/history/HistoryPage';
+import { OverviewPage } from '@/pages/overview/OverviewPage';
+import { EventsPage } from '@/pages/events/EventsPage';
+import { AttractionsPage } from '@/pages/attractions/AttractionsPage';
 import { Login } from '@/pages/auth/Login';
 import { createBrowserRouter } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
@@ -10,14 +15,37 @@ import { CreatePostPage } from '@/pages/post/CreatePostPage';
 import { MyPostsPage } from '@/pages/post/MyPostsPage';
 import { EditPostPage } from '@/pages/post/EditPostPage';
 import { NotificationListPage } from '@/pages/notification/NotificationListPage';
-import { AdminPostListPage } from '@/pages/post/AdminPostListPage';
-import { RootRedirect } from './RootRedirect';
 import { UnauthorizedPage } from '@/pages/error/UnauthorizedPage';
 import { FavoritesPage } from '@/pages/post/FavoritesPage';
 import { PostDetailPage } from '@/pages/post/PostDetailPage';
 
+// Epic 5 Pages
+import { SearchPage } from '@/pages/search/SearchPage';
+import { MapPage } from '@/pages/map/MapPage';
+
+// Admin Pages
+import { AdminDashboard } from '@/pages/admin/AdminDashboard';
+import { AdminUserList } from '@/pages/admin/AdminUserList';
+import { AdminPostList } from '@/pages/admin/AdminPostList';
+import { AdminTagList } from '@/pages/admin/AdminTagList';
+import { AdminLogList } from '@/pages/admin/AdminLogList';
+import { AdminLocationManagement } from '@/pages/admin/AdminLocationManagement';
+
 export const router = createBrowserRouter([
-  { path: '/', element: <RootRedirect /> },
+  {
+    path: '/',
+    element: <Layout />,
+    children: [
+      { path: '', element: <HomePage /> },
+      { path: 'history', element: <HistoryPage /> },
+      { path: 'overview', element: <OverviewPage /> },
+      { path: 'events', element: <EventsPage /> },
+      { path: 'attractions', element: <AttractionsPage /> },
+      { path: 'posts/:id', element: <PostDetailPage /> },
+      { path: 'search', element: <SearchPage /> },
+      { path: 'map', element: <MapPage /> },
+    ],
+  },
   { path: '/login', element: <Login /> },
   { path: '/register', element: <Register /> },
   { path: '/forgot-password', element: <ForgotPassword /> },
@@ -27,50 +55,35 @@ export const router = createBrowserRouter([
     path: '/admin',
     element: (
       <ProtectedRoute allowedRoles={['ADMIN']}>
-        <Layout />
+        <AdminLayout />
       </ProtectedRoute>
     ),
     children: [
-      { path: '', element: <Dashboard /> },
-      { path: 'dashboard', element: <Dashboard /> },
+      { path: '', element: <AdminDashboard /> },
+      { path: 'dashboard', element: <AdminDashboard /> },
+      { path: 'users', element: <AdminUserList /> },
+      { path: 'posts', element: <AdminPostList /> },
+      { path: 'tags', element: <AdminTagList /> },
+      { path: 'logs', element: <AdminLogList /> },
+      { path: 'locations', element: <AdminLocationManagement /> },
       { path: 'profile', element: <ProfilePage /> },
-      { path: 'my-posts', element: <MyPostsPage /> },
-      { path: 'create-post', element: <CreatePostPage /> },
-      { path: 'edit-post/:id', element: <EditPostPage /> },
       { path: 'notifications', element: <NotificationListPage /> },
-      { path: 'posts', element: <AdminPostListPage /> },
-      {
-        path: 'favorites',
-        element: <FavoritesPage />,
-      },
-      {
-        path: '/posts/:id',
-        element: <PostDetailPage />,
-      },
     ],
   },
   {
-    path: '/',
+    path: '/user',
     element: (
       <ProtectedRoute allowedRoles={['USER', 'ADMIN']}>
         <Layout />
       </ProtectedRoute>
     ),
     children: [
-      { path: 'dashboard', element: <Dashboard /> },
       { path: 'profile', element: <ProfilePage /> },
       { path: 'my-posts', element: <MyPostsPage /> },
       { path: 'create-post', element: <CreatePostPage /> },
       { path: 'edit-post/:id', element: <EditPostPage /> },
       { path: 'notifications', element: <NotificationListPage /> },
-      {
-        path: 'favorites',
-        element: <FavoritesPage />,
-      },
-      {
-        path: '/posts/:id',
-        element: <PostDetailPage />,
-      },
+      { path: 'favorites', element: <FavoritesPage /> },
     ],
   },
 ]);

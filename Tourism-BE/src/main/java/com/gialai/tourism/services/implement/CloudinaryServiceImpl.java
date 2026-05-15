@@ -24,7 +24,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     @Override
     public String uploadFile(MultipartFile file) throws IOException {
         Map<?,?> filePath = cloudinary.uploader().upload(file.getBytes(),ObjectUtils.emptyMap());
-        return filePath.get("url").toString();
+        return filePath.get("secure_url").toString();
     }
 
     @Override
@@ -34,6 +34,6 @@ public class CloudinaryServiceImpl implements CloudinaryService {
                 "overwrite", true
         );
         Map<?,?> filePath = cloudinary.uploader().upload(file.getBytes(), params);
-        return filePath.get("url").toString();
+        return filePath.get("secure_url").toString();
     }
 }

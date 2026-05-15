@@ -146,6 +146,36 @@ export const useAuth = () => {
     }
   };
 
+  const loginGoogle = async (idToken: string) => {
+    try {
+      const response = await authApi.googleLogin(idToken);
+      const loginData = response.data.data;
+      if (!loginData) throw new Error('Invalid response structure');
+
+      const { accessToken, refreshToken, account: accountDto } = loginData;
+
+      const user: User = {
+        id: accountDto.id,
+        fullName: accountDto.fullName || '',
+        username: accountDto.username || '',
+        email: accountDto.email,
+        avatar: accountDto.avatar,
+        roles: accountDto.roles as Role[],
+        phone: '',
+        address: '',
+      };
+
+      dispatch(setCredentials({ accessToken, refreshToken, account: user }));
+      return { success: true };
+    } catch (error: unknown) {
+      const err = error as ErrorResponse;
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Đăng nhập Google thất bại',
+      };
+    }
+  };
+
   return {
     isAuthenticated,
     user: account,
@@ -153,6 +183,7 @@ export const useAuth = () => {
     refreshToken,
     login,
     register,
+    loginGoogle,
     logout: logoutUser,
     forgotPassword,
     verifyOtp,

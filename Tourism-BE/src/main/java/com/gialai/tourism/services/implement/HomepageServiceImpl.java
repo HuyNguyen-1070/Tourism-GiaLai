@@ -68,6 +68,7 @@ public class HomepageServiceImpl implements HomepageService {
                 .likeCount(post.getLikeCount())
                 .favoriteCount(post.getFavoriteCount())
                 .averageRating(post.getAverageRating())
+                .status(post.getStatus().name())
                 .engagementScore(post.getViewCount() + post.getLikeCount() + post.getFavoriteCount())
                 .createdAt(post.getCreatedAt())
                 .build();

@@ -64,6 +64,18 @@ public class AuthController {
         return apiResponse;
     }
 
+    @PostMapping("/google")
+    @Operation(summary = "Google Login", description = "API allows user to login using Google ID Token")
+    public ApiResponse googleLogin(@RequestBody GoogleLoginDTO googleLoginDTO) {
+        AuthenticationDTO authenticationDTO = accountService.loginWithGoogle(googleLoginDTO);
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setCode(HttpStatus.OK.value());
+        apiResponse.setStatus(HttpStatus.OK.getReasonPhrase());
+        apiResponse.setMessage(MessageConstant.LOGIN_SUCCESS);
+        apiResponse.setData(authenticationDTO);
+        return apiResponse;
+    }
+
     @PostMapping("/register")
     public ApiResponse register(@Valid @RequestBody RegisterDTO registerDTO) {
         accountService.register(registerDTO);

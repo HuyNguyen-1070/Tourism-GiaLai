@@ -106,6 +106,7 @@ public class AttractionServiceImpl implements AttractionService {
                 .sourceType(post.getSourceType().name())
                 .authorUsername(post.getAuthor() != null ? post.getAuthor().getUsername() : null)
                 .sourceName(post.getSourceName())
+                .status(post.getStatus().name())
                 .latitude(lat)
                 .longitude(lng)
                 .viewCount(post.getViewCount())

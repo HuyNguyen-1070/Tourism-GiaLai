@@ -20,6 +20,7 @@ public class AttractionResponse {
     private String sourceType;
     private String authorUsername;
     private String sourceName;
+    private String status;
     private Double latitude;
     private Double longitude;
     private long viewCount;

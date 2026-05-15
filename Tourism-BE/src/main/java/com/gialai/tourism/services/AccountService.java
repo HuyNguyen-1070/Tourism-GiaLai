@@ -11,6 +11,7 @@ public interface AccountService {
     Account findByEmail(String email);
     Account findByUsername(String username);
     AuthenticationDTO login(LoginDTO loginDTO);
+    AuthenticationDTO loginWithGoogle(GoogleLoginDTO googleLoginDTO);
     void register(RegisterDTO registerDTO);
     void verifyRegistrationByOtp(OtpVerificationDTO otpVerificationDTO);
     boolean existsByEmail(String email);

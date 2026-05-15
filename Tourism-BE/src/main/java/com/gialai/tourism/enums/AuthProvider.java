@@ -1,5 +1,5 @@
 package com.gialai.tourism.enums;
 
 public enum AuthProvider {
-    LOCAL, GOOGLE, ZALO
+    LOCAL, GOOGLE
 }

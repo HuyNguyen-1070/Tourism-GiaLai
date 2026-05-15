@@ -7,14 +7,19 @@ import { Provider } from 'react-redux';
 import { store } from '@/store/store';
 import { ToastProvider } from '@/components/common/ToastNotification/index.tsx';
 import AwakePinger from '@/components/awake';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Provider store={store}>
-      <ToastProvider>
-        <AwakePinger />
-        <RouterProvider router={router} />
-      </ToastProvider>
-    </Provider>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <Provider store={store}>
+        <ToastProvider>
+          <AwakePinger />
+          <RouterProvider router={router} />
+        </ToastProvider>
+      </Provider>
+    </GoogleOAuthProvider>
   </React.StrictMode>
 );

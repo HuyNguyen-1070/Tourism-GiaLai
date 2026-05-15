@@ -7,7 +7,17 @@ import { PostStatusBadge } from '../post/components/PostStatusBadge';
 import { RatingStars } from '@/components/common/CustomUi/RatingStars';
 import { RatingInput } from '../post/components/RatingInput';
 import { CommentSection } from '../post/components/CommentSection';
-import { Calendar, Eye, Heart, Star, Bookmark, User, Link as LinkIcon, Share2, Loader2 } from 'lucide-react';
+import {
+  Calendar,
+  Eye,
+  Heart,
+  Star,
+  Bookmark,
+  User,
+  Link as LinkIcon,
+  Share2,
+  Loader2,
+} from 'lucide-react';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -169,11 +179,17 @@ export const PostDetailPage = () => {
       {/* Image gallery */}
       {p.images && p.images.length > 1 && (
         <div className="mt-10">
-          <h3 className="text-sm font-semibold uppercase tracking-widest text-outline mb-4">Thư viện ảnh</h3>
+          <h3 className="text-sm font-semibold uppercase tracking-widest text-outline mb-4">
+            Thư viện ảnh
+          </h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {p.images.slice(1).map((img, i) => (
               <div key={i} className="aspect-square rounded-xl overflow-hidden">
-                <img src={img} alt="" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                <img
+                  src={img}
+                  alt=""
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                />
               </div>
             ))}
           </div>
@@ -185,10 +201,11 @@ export const PostDetailPage = () => {
         <div className="flex flex-wrap gap-4 items-center">
           <button
             onClick={() => likeMutation.mutate()}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl border transition-all text-sm font-medium ${isLiked
-              ? 'border-rose-300 bg-rose-50 text-rose-500'
-              : 'border-outline-variant/30 text-on-surface-variant hover:border-rose-300 hover:text-rose-500 hover:bg-rose-50'
-              }`}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl border transition-all text-sm font-medium ${
+              isLiked
+                ? 'border-rose-300 bg-rose-50 text-rose-500'
+                : 'border-outline-variant/30 text-on-surface-variant hover:border-rose-300 hover:text-rose-500 hover:bg-rose-50'
+            }`}
           >
             <Heart className={`w-4 h-4 ${isLiked ? 'fill-current' : ''}`} />
             {interaction?.data?.likeCount ?? p.likeCount} Thích
@@ -196,10 +213,11 @@ export const PostDetailPage = () => {
 
           <button
             onClick={() => favMutation.mutate()}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl border transition-all text-sm font-medium ${isFavorited
-              ? 'border-amber-300 bg-amber-50 text-amber-500'
-              : 'border-outline-variant/30 text-on-surface-variant hover:border-amber-300 hover:text-amber-500 hover:bg-amber-50'
-              }`}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl border transition-all text-sm font-medium ${
+              isFavorited
+                ? 'border-amber-300 bg-amber-50 text-amber-500'
+                : 'border-outline-variant/30 text-on-surface-variant hover:border-amber-300 hover:text-amber-500 hover:bg-amber-50'
+            }`}
           >
             <Bookmark className={`w-4 h-4 ${isFavorited ? 'fill-current' : ''}`} />
             Lưu bài
@@ -211,9 +229,7 @@ export const PostDetailPage = () => {
               <span className="text-sm font-semibold ml-1">{avgRating.toFixed(1)}</span>
               <span className="text-xs text-outline">({ratingCount} đánh giá)</span>
             </div>
-            {user && (
-              <RatingInput value={myScore} onChange={handleRate} size={24} />
-            )}
+            {user && <RatingInput value={myScore} onChange={handleRate} size={24} />}
           </div>
         </div>
       </div>

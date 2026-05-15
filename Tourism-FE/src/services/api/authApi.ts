@@ -15,6 +15,8 @@ export const authApi = {
   register: (data: RegisterRequest) => api.post<ApiResponse>('/auth/register', data),
 
   login: (data: LoginRequest) => api.post<ApiResponse<LoginResponse>>('/auth/login', data),
+  googleLogin: (idToken: string) =>
+    api.post<ApiResponse<LoginResponse>>('/auth/google', { idToken }),
 
   logout: (refreshToken: string) =>
     api.post<ApiResponse>('/auth/logout', {}, { headers: { 'Refresh-Token': refreshToken } }),

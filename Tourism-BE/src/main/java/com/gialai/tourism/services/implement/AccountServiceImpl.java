@@ -16,7 +16,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gialai.tourism.enums.AuthProvider;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import org.springframework.beans.factory.annotation.Value;
+
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,6 +32,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
+    @Value("${google.client-id}")
+    private String googleClientId;
+
     private final EmailService emailService;
     private final OtpService otpService;
     private final PasswordService passwordService;
