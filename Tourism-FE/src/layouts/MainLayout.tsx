@@ -45,14 +45,46 @@ export const MainLayout = () => {
       {/* Top Nav */}
       <header className="bg-white/80 backdrop-blur-md border-b border-basalt-soil/10 sticky top-0 z-50 shadow-sm">
         <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-4 flex items-center justify-between">
-          <Link
-            to="/"
-            className="font-headline-md text-headline-md text-forest-leaf italic flex items-center gap-2"
-          >
-            <span className="bg-forest-leaf text-white px-2 py-0.5 rounded italic not-underline font-bold text-sm">
-              GL
-            </span>
-            Gia Lai Heritage
+          <Link to="/" className="flex items-center gap-2">
+            <svg
+              width="auto"
+              height="100%"
+              viewBox="0 0 400 80"
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-14 w-auto"
+            >
+              <path
+                d="M40 50L70 15L100 50M55 50L70 30L85 50"
+                stroke="#205609"
+                strokeWidth="4"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path d="M30 60H110" stroke="#8B5E3C" strokeWidth="3" strokeLinecap="round" />
+              <text
+                x="130"
+                y="48"
+                fontFamily="Playfair Display, serif"
+                fontSize="32"
+                fontWeight="700"
+                fill="#205609"
+              >
+                Gia Lai
+              </text>
+              <text
+                x="130"
+                y="68"
+                fontFamily="Inter, sans-serif"
+                fontSize="13"
+                fontWeight="500"
+                letterSpacing="3"
+                fill="#8B5E3C"
+                style={{ textTransform: 'uppercase' }}
+              >
+                Heritage
+              </text>
+            </svg>
           </Link>
 
           {/* Desktop Nav */}
@@ -166,7 +198,7 @@ export const MainLayout = () => {
               ))}
               {isAuthenticated && (
                 <div className="pt-4 mt-4 border-t border-basalt-soil/10 flex flex-col gap-4">
-                  <Link to="/user/dashboard" className="text-on-surface-variant p-2 font-bold">
+                  <Link to="/dashboard" className="text-on-surface-variant p-2 font-bold">
                     Dashboard
                   </Link>
                   <Link to="/user/my-posts" className="text-on-surface-variant p-2 font-bold">
@@ -189,11 +221,46 @@ export const MainLayout = () => {
         <div className="max-w-container-max mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
             <div className="col-span-1 md:col-span-2">
-              <Link
-                to="/"
-                className="font-headline-md text-headline-md text-forest-leaf italic mb-6 block"
-              >
-                Gia Lai Heritage
+              <Link to="/" className="mb-6 block">
+                <svg
+                  width="auto"
+                  height="48"
+                  viewBox="0 0 400 80"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-12 w-auto"
+                >
+                  <path
+                    d="M40 50L70 15L100 50M55 50L70 30L85 50"
+                    stroke="#4B940A"
+                    strokeWidth="4"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path d="M30 60H110" stroke="#ffdcbe" strokeWidth="3" strokeLinecap="round" />
+                  <text
+                    x="130"
+                    y="48"
+                    fontFamily="Playfair Display, serif"
+                    fontSize="32"
+                    fontWeight="700"
+                    fill="#4B940A"
+                  >
+                    Gia Lai
+                  </text>
+                  <text
+                    x="130"
+                    y="68"
+                    fontFamily="Inter, sans-serif"
+                    fontSize="13"
+                    fontWeight="500"
+                    letterSpacing="3"
+                    fill="#ffdcbe"
+                    style={{ textTransform: 'uppercase' }}
+                  >
+                    Heritage
+                  </text>
+                </svg>
               </Link>
               <p className="text-white/60 max-w-md leading-relaxed">
                 Khám phá vẻ đẹp tiềm ẩn, lịch sử hào hùng và nền văn hóa rực rỡ của vùng đất Gia Lai

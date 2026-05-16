@@ -29,8 +29,8 @@ export const AdminLogList = () => {
         size: 20,
         action: actionFilter || undefined,
       });
-      setLogs(res.data.content);
-      setTotalPages(res.data.totalPages);
+      setLogs(res.data?.content || []);
+      setTotalPages(res.data?.totalPages || 0);
     } catch (error) {
       toast.error('Không thể tải lịch sử hệ thống');
     } finally {

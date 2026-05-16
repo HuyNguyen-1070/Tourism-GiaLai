@@ -15,7 +15,7 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export const Login = () => {
-  const { login, loginGoogle, isAuthenticated } = useAuth();
+  const { login, loginGoogle, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [error, setError] = useState('');
@@ -31,8 +31,11 @@ export const Login = () => {
   });
 
   useEffect(() => {
-    if (isAuthenticated) navigate('/dashboard');
-  }, [isAuthenticated, navigate]);
+    if (isAuthenticated && user) {
+      const isAdmin = user.roles?.includes('ADMIN');
+      navigate(isAdmin ? '/admin/dashboard' : '/');
+    }
+  }, [isAuthenticated, user, navigate]);
 
   useEffect(() => {
     if (location.state?.passwordReset) {

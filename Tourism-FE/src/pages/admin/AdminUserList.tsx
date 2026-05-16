@@ -35,8 +35,8 @@ export const AdminUserList = () => {
         role: role || undefined,
         isActive,
       });
-      setUsers(res.data.content);
-      setTotalPages(res.data.totalPages);
+      setUsers(res.data?.content || []);
+      setTotalPages(res.data?.totalPages || 0);
     } catch (error) {
       toast.error('Không thể tải danh sách người dùng');
     } finally {

@@ -41,10 +41,10 @@ export const AdminDashboard = () => {
           adminApi.getTrendingTags('WEEK', 5),
           adminApi.getPostEngagement('WEEK', undefined, 5),
         ]);
-        setStats(statsRes.data);
-        setActivity(activityRes.data);
-        setTrendingTags(tagsRes.data.tags);
-        setEngagements(engRes.data.posts);
+        setStats(statsRes.data || null);
+        setActivity(activityRes.data || null);
+        setTrendingTags(tagsRes.data?.tags || []);
+        setEngagements(engRes.data?.posts || []);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       } finally {

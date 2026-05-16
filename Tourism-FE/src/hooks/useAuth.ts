@@ -23,7 +23,7 @@ export const useAuth = () => {
   const login = async (username: string, password: string) => {
     try {
       const response = await authApi.login({ username, password });
-      const loginData = response.data.data;
+      const loginData = response.data;
       if (!loginData) throw new Error('Invalid response structure');
 
       const { accessToken, refreshToken, account: accountDto } = loginData;
@@ -149,7 +149,7 @@ export const useAuth = () => {
   const loginGoogle = async (idToken: string) => {
     try {
       const response = await authApi.googleLogin(idToken);
-      const loginData = response.data.data;
+      const loginData = response.data;
       if (!loginData) throw new Error('Invalid response structure');
 
       const { accessToken, refreshToken, account: accountDto } = loginData;

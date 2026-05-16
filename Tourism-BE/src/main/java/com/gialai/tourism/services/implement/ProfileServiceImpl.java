@@ -27,16 +27,18 @@ public class ProfileServiceImpl implements ProfileService {
     private final ImageService imageService;
 
     @Override
-    public ProfileDTO getMyProfile(String email) {
-        Account account = accountRepository.findByEmail(email)
+    public ProfileDTO getMyProfile(String identifier) {
+        Account account = accountRepository.findByEmail(identifier)
+                .or(() -> accountRepository.findByUsername(identifier))
                 .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND, "Account"));
         return profileMapper.toProfileDTO(account);
     }
 
     @Override
     @Transactional
-    public ProfileDTO updateMyProfile(String email, ProfileUpdateDTO dto) {
-        Account account = accountRepository.findByEmail(email)
+    public ProfileDTO updateMyProfile(String identifier, ProfileUpdateDTO dto) {
+        Account account = accountRepository.findByEmail(identifier)
+                .or(() -> accountRepository.findByUsername(identifier))
                 .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND, "Account"));
 
         if (dto.getFullName() != null) {
@@ -59,7 +61,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional
-    public String updateAvatar(String email, MultipartFile file) {
+    public String updateAvatar(String identifier, MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new AppException(ErrorCode.VALIDATION_ERROR, "Avatar file is required.");
         }
@@ -70,7 +72,8 @@ public class ProfileServiceImpl implements ProfileService {
             throw new AppException(ErrorCode.INVALID_IMAGE_FORMAT);
         }
 
-        Account account = accountRepository.findByEmail(email)
+        Account account = accountRepository.findByEmail(identifier)
+                .or(() -> accountRepository.findByUsername(identifier))
                 .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND, "Account"));
 
         String oldAvatarUrl = account.getAvatar();

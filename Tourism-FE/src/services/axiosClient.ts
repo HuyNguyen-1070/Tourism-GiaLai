@@ -45,7 +45,7 @@ api.interceptors.request.use(async (config) => {
 });
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => response.data,
   async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
     const response = error.response;
@@ -73,8 +73,8 @@ api.interceptors.response.use(
               const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
               if (refreshToken) {
                 const res = await authApi.refreshToken(refreshToken);
-                const newAccessToken = res.data.data?.accessToken;
-                const newRefreshToken = res.data.data?.refreshToken;
+                const newAccessToken = res.data?.accessToken;
+                const newRefreshToken = res.data?.refreshToken;
 
                 if (newAccessToken && newRefreshToken) {
                   localStorage.setItem(TOKEN_KEY, newAccessToken);

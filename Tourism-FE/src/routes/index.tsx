@@ -9,6 +9,7 @@ import { Login } from '@/pages/auth/Login';
 import { createBrowserRouter } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import { Register } from '@/pages/auth/Register';
+import { RootRedirect } from './RootRedirect';
 import { ForgotPassword } from '@/pages/auth/ForgotPassword';
 import { ProfilePage } from '@/pages/profile/ProfilePage';
 import { CreatePostPage } from '@/pages/post/CreatePostPage';
@@ -50,6 +51,7 @@ export const router = createBrowserRouter([
   { path: '/register', element: <Register /> },
   { path: '/forgot-password', element: <ForgotPassword /> },
   { path: '/unauthorized', element: <UnauthorizedPage /> },
+  { path: '/dashboard', element: <RootRedirect /> },
 
   {
     path: '/admin',

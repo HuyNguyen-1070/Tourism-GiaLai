@@ -220,6 +220,66 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public AuthenticationDTO loginWithGoogle(GoogleLoginDTO dto) {
+        try {
+            NetHttpTransport transport = new NetHttpTransport();
+            GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
+
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+                    .setAudience(Collections.singletonList(googleClientId))
+                    .build();
+
+            GoogleIdToken idToken = verifier.verify(dto.getIdToken());
+            if (idToken == null) {
+                throw new AppException(ErrorCode.INVALID_TOKEN);
+            }
+
+            GoogleIdToken.Payload payload = idToken.getPayload();
+            String email = payload.getEmail();
+            String fullName = (String) payload.get("name");
+            String pictureUrl = (String) payload.get("picture");
+            String googleId = payload.getSubject();
+
+            Account account = accountRepository.findByEmail(email).orElseGet(() -> {
+                Role userRole = roleService.getByType(RoleType.USER).orElseThrow();
+                Account newAccount = Account.builder()
+                        .email(email)
+                        .username(email.split("@")[0] + "_" + System.currentTimeMillis())
+                        .fullName(fullName)
+                        .avatar(pictureUrl)
+                        .provider(AuthProvider.GOOGLE)
+                        .providerId(googleId)
+                        .password(passwordService.encryptPassword(java.util.UUID.randomUUID().toString()))
+                        .isActive(true)
+                        .roles(java.util.Set.of(userRole))
+                        .build();
+                return accountRepository.save(newAccount);
+            });
+
+            if (!account.isActive()) {
+                throw new AppException(ErrorCode.ACCOUNT_LOCKED);
+            }
+
+            Set<String> roleNames = account.getRoles().stream()
+                    .map(role -> role.getName().name())
+                    .collect(Collectors.toSet());
+
+            String accessToken = jwtService.generateToken(account.getId(), account.getEmail(), roleNames);
+            String refreshToken = refreshTokenService.generateRefreshToken(account);
+
+            return AuthenticationDTO.builder()
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .account(accountMapper.toDTO(account))
+                    .build();
+
+        } catch (Exception e) {
+            log.error("Google login error: {}", e.getMessage());
+            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION, e.getMessage());
+        }
+    }
+
+    @Override
     public Account findByUsername(String username) {
         return accountRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND, "Account"));

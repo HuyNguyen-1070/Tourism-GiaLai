@@ -39,8 +39,8 @@ export const AdminPostList = () => {
         sort: status === 'PENDING' ? 'createdAt' : 'updatedAt',
         direction: status === 'PENDING' ? 'asc' : 'desc',
       });
-      setPosts(res.data.content);
-      setTotalPages(res.data.totalPages);
+      setPosts(res.data?.content || []);
+      setTotalPages(res.data?.totalPages || 0);
     } catch (error) {
       toast.error('Không thể tải danh sách bài viết');
     } finally {

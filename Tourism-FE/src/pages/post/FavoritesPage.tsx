@@ -4,6 +4,7 @@ import { interactionApi } from '@/services/api/interactionApi';
 import { PostCard } from '../post/components/PostCard';
 import { Input } from '@/components/ui/input';
 import { Search, Loader2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
 export const FavoritesPage = () => {
@@ -65,7 +66,7 @@ export const FavoritesPage = () => {
           </span>
           <p className="mt-4 text-on-surface-variant">Chưa có bài viết yêu thích nào.</p>
           <Button asChild className="mt-6">
-            <a href="/dashboard">Khám phá bài viết</a>
+            <Link to="/">Khám phá bài viết</Link>
           </Button>
         </div>
       ) : (
