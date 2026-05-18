@@ -15,6 +15,7 @@ import {
   UserPlus,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { Role } from '@/types/auth';
 
 export const AdminUserList = () => {
   const [users, setUsers] = useState<UserSummary[]>([]);
@@ -59,9 +60,9 @@ export const AdminUserList = () => {
     }
   };
 
-  const handleAssignRole = async (userId: string, currentRoles: string[]) => {
-    const isCurrentlyAdmin = currentRoles.includes('ADMIN');
-    const newRole = 'ADMIN';
+  const handleAssignRole = async (userId: string, currentRoles: Role[]) => {
+    const isCurrentlyAdmin = currentRoles.includes(Role.ADMIN);
+    const newRole = Role.ADMIN;
     const action = isCurrentlyAdmin ? 'REVOKE' : 'GRANT';
 
     try {
@@ -102,8 +103,8 @@ export const AdminUserList = () => {
           className="px-6 py-3 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-500 focus:ring-2 focus:ring-forest-leaf/20"
         >
           <option value="">Tất cả vai trò</option>
-          <option value="USER">Người dùng</option>
-          <option value="ADMIN">Quản trị viên</option>
+          <option value={Role.USER}>Người dùng</option>
+          <option value={Role.ADMIN}>Quản trị viên</option>
         </select>
 
         <select
@@ -161,7 +162,7 @@ export const AdminUserList = () => {
                           {user.roles.map((r) => (
                             <span
                               key={r}
-                              className={`px-2 py-0.5 rounded text-[10px] font-bold ${r === 'ADMIN' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}
+                              className={`px-2 py-0.5 rounded text-[10px] font-bold ${r === Role.ADMIN ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}
                             >
                               {r}
                             </span>
@@ -187,7 +188,7 @@ export const AdminUserList = () => {
                           <button
                             onClick={() => handleAssignRole(user.id, user.roles)}
                             title={
-                              user.roles.includes('ADMIN') ? 'Thu hồi Admin' : 'Cấp quyền Admin'
+                              user.roles.includes(Role.ADMIN) ? 'Thu hồi Admin' : 'Cấp quyền Admin'
                             }
                             className="p-2 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
                           >

@@ -25,6 +25,8 @@ export interface PostSummaryResponse {
   id: string;
   title: string;
   summary: string;
+  thumbnail?: string;
+  thumbnailUrl?: string;
   tags: string[];
   authorUsername: string;
   status: string; // 'PENDING' | 'APPROVED' | 'REJECTED' | 'DELETED'

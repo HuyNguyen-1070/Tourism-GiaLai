@@ -1,4 +1,5 @@
 import { Tag } from './post';
+import { Role } from './auth';
 
 export interface UserSummary {
   id: string;
@@ -8,7 +9,7 @@ export interface UserSummary {
   avatar: string | null;
   provider: 'LOCAL' | 'GOOGLE';
   isActive: boolean;
-  roles: string[];
+  roles: Role[];
   postCount: number;
   createdAt: string;
 }

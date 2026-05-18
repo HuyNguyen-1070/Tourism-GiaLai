@@ -34,6 +34,27 @@ export interface Post {
   rejectedReason?: string;
 }
 
+export interface PostDisplayData {
+  id: string;
+  title: string;
+  content?: string;
+  summary?: string;
+  thumbnail?: string;
+  images?: string[];
+  tags?: (Tag | string)[];
+  sourceType?: SourceType;
+  sourceName?: string | null;
+  authorUsername?: string | null;
+  status?: PostStatus | string;
+  viewCount: number;
+  likeCount: number;
+  favoriteCount: number;
+  averageRating: number;
+  ratingCount?: number;
+  createdAt: string;
+  updatedAt?: string;
+}
+
 export interface CreatePostPayload {
   title: string;
   content: string;

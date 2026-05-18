@@ -19,6 +19,7 @@ import { NotificationListPage } from '@/pages/notification/NotificationListPage'
 import { UnauthorizedPage } from '@/pages/error/UnauthorizedPage';
 import { FavoritesPage } from '@/pages/post/FavoritesPage';
 import { PostDetailPage } from '@/pages/post/PostDetailPage';
+import { Role } from '@/types/auth';
 
 // Epic 5 Pages
 import { SearchPage } from '@/pages/search/SearchPage';
@@ -56,7 +57,7 @@ export const router = createBrowserRouter([
   {
     path: '/admin',
     element: (
-      <ProtectedRoute allowedRoles={['ADMIN']}>
+      <ProtectedRoute allowedRoles={[Role.ADMIN]}>
         <AdminLayout />
       </ProtectedRoute>
     ),
@@ -75,7 +76,7 @@ export const router = createBrowserRouter([
   {
     path: '/user',
     element: (
-      <ProtectedRoute allowedRoles={['USER', 'ADMIN']}>
+      <ProtectedRoute allowedRoles={[Role.USER, Role.ADMIN]}>
         <Layout />
       </ProtectedRoute>
     ),

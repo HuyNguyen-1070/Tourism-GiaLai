@@ -12,33 +12,33 @@ import {
 } from '@/types/auth';
 
 export const authApi = {
-  register: (data: RegisterRequest) => api.post<ApiResponse>('/auth/register', data),
+  register: (data: RegisterRequest) => api.post<any, ApiResponse>('/auth/register', data),
 
-  login: (data: LoginRequest) => api.post<ApiResponse<LoginResponse>>('/auth/login', data),
+  login: (data: LoginRequest) => api.post<any, ApiResponse<LoginResponse>>('/auth/login', data),
   googleLogin: (idToken: string) =>
-    api.post<ApiResponse<LoginResponse>>('/auth/google', { idToken }),
+    api.post<any, ApiResponse<LoginResponse>>('/auth/google', { idToken }),
 
   logout: (refreshToken: string) =>
-    api.post<ApiResponse>('/auth/logout', {}, { headers: { 'Refresh-Token': refreshToken } }),
+    api.post<any, ApiResponse>('/auth/logout', {}, { headers: { 'Refresh-Token': refreshToken } }),
 
   refreshToken: (refreshToken: string) =>
-    api.post<ApiResponse<RefreshTokenResponse>>(
+    api.post<any, ApiResponse<RefreshTokenResponse>>(
       '/auth/refresh-token',
       {},
       { headers: { 'Refresh-Token': refreshToken } }
     ),
 
   forgotPassword: (data: ForgotPasswordRequest) =>
-    api.post<ApiResponse>('/auth/forgot-password', data),
+    api.post<any, ApiResponse>('/auth/forgot-password', data),
 
   verifyCode: (data: { email: string; otp: string }) =>
-    api.post<ApiResponse>('/auth/verify-otp', data),
+    api.post<any, ApiResponse>('/auth/verify-otp', data),
 
   resetPassword: (data: ResetPasswordRequest) =>
-    api.post<ApiResponse>('/auth/reset-password', data),
+    api.post<any, ApiResponse>('/auth/reset-password', data),
 
   verifyRegistration: (data: VerifyRegistrationPayload) =>
-    api.post<ApiResponse>('/auth/verify-registration', data),
+    api.post<any, ApiResponse>('/auth/verify-registration', data),
 
-  resendCode: (data: ResendCodePayload) => api.post<ApiResponse>('/api/auth/resend-otp', data),
+  resendCode: (data: ResendCodePayload) => api.post<any, ApiResponse>('/api/auth/resend-otp', data),
 };

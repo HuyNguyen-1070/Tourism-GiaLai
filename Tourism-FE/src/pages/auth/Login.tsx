@@ -6,6 +6,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Footer } from '@/components/common/Footer/Footer';
 import { GoogleLogin } from '@react-oauth/google';
+import { Role } from '@/types/auth';
 
 const loginSchema = z.object({
   username: z.string().min(1, 'Vui lòng nhập tên đăng nhập'),
@@ -32,7 +33,7 @@ export const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      const isAdmin = user.roles?.includes('ADMIN');
+      const isAdmin = user.roles?.includes(Role.ADMIN);
       navigate(isAdmin ? '/admin/dashboard' : '/');
     }
   }, [isAuthenticated, user, navigate]);

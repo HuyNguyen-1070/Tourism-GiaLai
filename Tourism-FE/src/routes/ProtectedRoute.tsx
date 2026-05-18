@@ -3,9 +3,10 @@ import { Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '@/store/store';
 import { logout } from '@/store/slices/authSlice';
+import { Role } from '@/types/auth';
 
 interface ProtectedRouteProps {
-  allowedRoles: string[];
+  allowedRoles: Role[];
   children: React.ReactNode;
 }
 

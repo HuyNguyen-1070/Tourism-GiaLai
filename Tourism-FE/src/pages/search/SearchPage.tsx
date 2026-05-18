@@ -199,13 +199,10 @@ export const SearchPage = () => {
                 {posts.map((post) => (
                   <PostCard
                     key={post.id}
-                    post={
-                      {
-                        ...post,
-                        thumbnail: post.thumbnailUrl,
-                        author: { username: post.authorUsername },
-                      } as any
-                    }
+                    post={{
+                      ...post,
+                      thumbnail: post.thumbnailUrl || undefined,
+                    }}
                   />
                 ))}
               </div>

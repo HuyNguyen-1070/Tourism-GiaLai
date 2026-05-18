@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Camera, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/common/ToastNotification';
+import { Role } from '@/types/auth';
 
 export const ProfilePage = () => {
   const { profile, loading, updateProfile, updateAvatar } = useProfile();
@@ -178,7 +179,7 @@ export const ProfilePage = () => {
             <div>
               <Label>Vai trò</Label>
               <p className="mt-1">
-                {profile?.roles?.includes('ADMIN') ? (
+                {profile?.roles?.includes(Role.ADMIN) ? (
                   <span className="inline-flex items-center px-2 py-1 rounded bg-primary-container text-on-primary-container text-label-sm">
                     Quản trị viên
                   </span>

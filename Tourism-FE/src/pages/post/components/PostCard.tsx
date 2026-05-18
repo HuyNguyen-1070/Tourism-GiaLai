@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
-import { Post } from '@/types/post';
+import { Post, PostDisplayData } from '@/types/post';
 import { PostStatusBadge } from './PostStatusBadge';
 import { Eye, Heart, Star, Calendar, MapPin } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
 
 interface PostCardProps {
-  post: Post;
+  post: PostDisplayData;
   showActions?: boolean;
   onEdit?: () => void;
   onDelete?: () => void;
@@ -30,7 +30,7 @@ export const PostCard = ({ post, showActions = false, onEdit, onDelete }: PostCa
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
         <div className="absolute top-4 left-4">
-          <PostStatusBadge status={post.status} />
+          <PostStatusBadge status={post.status as any} />
         </div>
         {/* Tags on image */}
         <div className="absolute bottom-4 left-4 flex flex-wrap gap-1.5">

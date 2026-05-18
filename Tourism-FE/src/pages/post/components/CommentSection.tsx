@@ -15,7 +15,6 @@ interface CommentSectionProps {
 export const CommentSection = ({ postId }: CommentSectionProps) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const [page, setPage] = useState(0);
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ['comments', postId],
     queryFn: ({ pageParam = 0 }) =>

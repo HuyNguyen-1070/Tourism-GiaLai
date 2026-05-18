@@ -12,12 +12,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Bell, Menu, X, User, LogOut, FileText } from 'lucide-react';
+import { Role } from '@/types/auth';
 
 export const Header = () => {
   const { user, isAuthenticated, logout } = useAuth(); // đổi tên
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const isAdmin = user?.roles?.some((role) => role === 'ADMIN');
+  const isAdmin = user?.roles?.some((role) => role === Role.ADMIN);
 
   const handleLogout = () => {
     logout();

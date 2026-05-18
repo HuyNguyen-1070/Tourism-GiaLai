@@ -29,7 +29,11 @@ export const PostStatusBadge = ({ status }: PostStatusBadgeProps) => {
     },
   };
 
-  const { label, icon: Icon, className } = config[status];
+  const currentConfig = config[status as keyof typeof config];
+
+  if (!currentConfig) return null;
+
+  const { label, icon: Icon, className } = currentConfig;
 
   return (
     <span

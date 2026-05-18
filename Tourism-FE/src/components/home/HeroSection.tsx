@@ -8,7 +8,7 @@ export const HeroSection = () => {
         className="absolute inset-0 z-0 scale-110"
         style={{
           backgroundImage:
-            'url("https://res.cloudinary.com/dz8o8v6z2/image/upload/v1715764000/gialai_hero.jpg")',
+            'url("/images/BG-DashBoard.png")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           filter: 'brightness(0.7)',

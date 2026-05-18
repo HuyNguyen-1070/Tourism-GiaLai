@@ -9,6 +9,7 @@ import { Pencil, Trash2, Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
+import { Role } from '@/types/auth';
 
 interface CommentItemProps {
   comment: CommentResponse;
@@ -22,7 +23,7 @@ export const CommentItem = ({ comment, postId }: CommentItemProps) => {
   const queryClient = useQueryClient();
 
   const isOwner = user?.username === comment.authorUsername;
-  const isAdmin = user?.roles?.includes('ADMIN');
+  const isAdmin = user?.roles?.includes(Role.ADMIN);
 
   const updateMutation = useMutation({
     mutationFn: (content: string) => interactionApi.updateComment(comment.id, { content }),
