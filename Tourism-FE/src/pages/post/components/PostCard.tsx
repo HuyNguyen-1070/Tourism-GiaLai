@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Post, PostDisplayData } from '@/types/post';
+import { PostDisplayData } from '@/types/post';
 import { PostStatusBadge } from './PostStatusBadge';
 import { Eye, Heart, Star, Calendar, MapPin } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
@@ -8,11 +8,12 @@ import { vi } from 'date-fns/locale';
 interface PostCardProps {
   post: PostDisplayData;
   showActions?: boolean;
+  showStatusBadge?: boolean;
   onEdit?: () => void;
   onDelete?: () => void;
 }
 
-export const PostCard = ({ post, showActions = false, onEdit, onDelete }: PostCardProps) => {
+export const PostCard = ({ post, showActions = false, showStatusBadge = false, onEdit, onDelete }: PostCardProps) => {
   return (
     <article className="bg-white rounded-2xl overflow-hidden border border-outline-variant/20 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col">
       <div className="relative h-52 overflow-hidden bg-surface-container">
@@ -29,9 +30,11 @@ export const PostCard = ({ post, showActions = false, onEdit, onDelete }: PostCa
         )}
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-        <div className="absolute top-4 left-4">
-          <PostStatusBadge status={post.status as any} />
-        </div>
+        {showStatusBadge && (
+          <div className="absolute top-4 left-4">
+            <PostStatusBadge status={post.status as any} />
+          </div>
+        )}
         {/* Tags on image */}
         <div className="absolute bottom-4 left-4 flex flex-wrap gap-1.5">
           {(post.tags || []).slice(0, 2).map((tag) => (

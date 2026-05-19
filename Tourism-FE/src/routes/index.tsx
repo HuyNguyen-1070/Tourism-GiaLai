@@ -32,6 +32,7 @@ import { AdminPostList } from '@/pages/admin/AdminPostList';
 import { AdminTagList } from '@/pages/admin/AdminTagList';
 import { AdminLogList } from '@/pages/admin/AdminLogList';
 import { AdminLocationManagement } from '@/pages/admin/AdminLocationManagement';
+import { AdminHistoryTimeline } from '@/pages/admin/AdminHistoryTimeline';
 
 export const router = createBrowserRouter([
   {
@@ -69,6 +70,7 @@ export const router = createBrowserRouter([
       { path: 'tags', element: <AdminTagList /> },
       { path: 'logs', element: <AdminLogList /> },
       { path: 'locations', element: <AdminLocationManagement /> },
+      { path: 'history-timeline', element: <AdminHistoryTimeline /> },
       { path: 'profile', element: <ProfilePage /> },
       { path: 'notifications', element: <NotificationListPage /> },
     ],

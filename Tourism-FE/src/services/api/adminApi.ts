@@ -82,4 +82,14 @@ export const adminApi = {
 
   // Admin Logs
   getLogs: (params: any) => api.get<PaginatedResponse<AdminLog>>('/admin/logs', { params }),
+
+  // History Timeline Management
+  getHistoryTimelines: () => api.get<any[]>('/admin/history-timeline'),
+
+  createHistoryTimeline: (data: any) => api.post('/admin/history-timeline', data),
+
+  updateHistoryTimeline: (id: string, data: any) =>
+    api.put(`/admin/history-timeline/${id}`, data),
+
+  deleteHistoryTimeline: (id: string) => api.delete(`/admin/history-timeline/${id}`),
 };

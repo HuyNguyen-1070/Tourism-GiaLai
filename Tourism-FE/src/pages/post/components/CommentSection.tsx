@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { interactionApi } from '@/services/api/interactionApi';
 import { CommentItem } from './CommentItem';

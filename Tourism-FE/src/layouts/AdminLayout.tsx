@@ -14,6 +14,7 @@ import {
   Bell,
   Search,
   UserCircle,
+  Landmark,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -29,6 +30,7 @@ export const AdminLayout = () => {
     { name: 'Quản lý bài viết', icon: FileText, path: '/admin/posts' },
     { name: 'Quản lý Tag', icon: Tags, path: '/admin/tags' },
     { name: 'Quản lý Địa điểm', icon: MapPin, path: '/admin/locations' },
+    { name: 'Lịch sử & Văn hoá', icon: Landmark, path: '/admin/history-timeline' },
     { name: 'Lịch sử hệ thống', icon: History, path: '/admin/logs' },
     { name: 'Cài đặt', icon: Settings, path: '/admin/settings' },
   ];

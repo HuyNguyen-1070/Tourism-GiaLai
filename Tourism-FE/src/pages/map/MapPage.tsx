@@ -26,30 +26,33 @@ L.Icon.Default.mergeOptions({
 
 // Custom icons
 const selectedIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+  iconUrl:
+    'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  shadowSize: [41, 41],
 });
 
 const defaultIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+  iconUrl:
+    'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  shadowSize: [41, 41],
 });
 
 const userIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+  iconUrl:
+    'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  shadowSize: [41, 41],
 });
 
 const defaultCenter: LatLng = {
@@ -63,7 +66,7 @@ const MapController = ({ center }: { center: LatLng | null }) => {
   useEffect(() => {
     if (center) {
       map.flyTo([center.lat, center.lng], map.getZoom(), {
-        duration: 1.5
+        duration: 1.5,
       });
     }
   }, [center, map]);
@@ -246,15 +249,12 @@ export const MapPage = () => {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          
+
           <MapController center={mapCenter} />
           <MapEvents isAllMode={isAllMode} />
 
           {userLocation && (
-            <Marker
-              position={[userLocation.lat, userLocation.lng]}
-              icon={userIcon}
-            >
+            <Marker position={[userLocation.lat, userLocation.lng]} icon={userIcon}>
               <Popup>Vị trí của bạn</Popup>
             </Marker>
           )}
@@ -282,9 +282,8 @@ export const MapPage = () => {
                   <div className="relative h-24 rounded-t-lg overflow-hidden mb-2">
                     <img
                       src={
-                        ('postThumbnailUrl' in loc
-                          ? loc.postThumbnailUrl
-                          : loc.thumbnailUrl) || 'https://via.placeholder.com/240x120'
+                        ('postThumbnailUrl' in loc ? loc.postThumbnailUrl : loc.thumbnailUrl) ||
+                        'https://via.placeholder.com/240x120'
                       }
                       alt={loc.name}
                       className="w-full h-full object-cover"
@@ -298,9 +297,7 @@ export const MapPage = () => {
                     <h3 className="font-bold text-basalt-soil text-sm mb-1 leading-tight">
                       {loc.name}
                     </h3>
-                    <p className="text-[10px] text-slate-500 mb-2 line-clamp-2">
-                      {loc.address}
-                    </p>
+                    <p className="text-[10px] text-slate-500 mb-2 line-clamp-2">{loc.address}</p>
 
                     <a
                       href={`/posts/${loc.postId}`}

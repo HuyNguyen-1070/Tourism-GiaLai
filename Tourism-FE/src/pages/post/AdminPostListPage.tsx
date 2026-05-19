@@ -99,7 +99,7 @@ export const AdminPostListPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {posts.map((post) => (
             <div key={post.id} className="relative">
-              <PostCard post={post} />
+              <PostCard post={post} showStatusBadge={true} />
               <div className="px-6 pb-5 -mt-2 bg-white rounded-b-2xl border-x border-b border-outline-variant/20">
                 <Button
                   onClick={() => {

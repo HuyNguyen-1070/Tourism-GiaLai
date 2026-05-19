@@ -7,8 +7,7 @@ export const HeroSection = () => {
       <div
         className="absolute inset-0 z-0 scale-110"
         style={{
-          backgroundImage:
-            'url("/images/BG-DashBoard.png")',
+          backgroundImage: 'url("/images/BG-DashBoard.png")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           filter: 'brightness(0.7)',

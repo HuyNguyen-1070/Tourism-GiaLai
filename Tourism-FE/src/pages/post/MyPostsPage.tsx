@@ -132,8 +132,9 @@ export const MyPostsPage = () => {
             <PostCard
               key={post.id}
               post={post}
-              showActions
-              onEdit={() => navigate(`/edit-post/${post.id}`)}
+              showActions={true}
+              showStatusBadge={true}
+              onEdit={() => navigate(`/user/edit-post/${post.id}`)}
               onDelete={() => handleDelete(post.id)}
             />
           ))}
