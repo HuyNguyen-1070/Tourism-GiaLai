@@ -21,7 +21,7 @@ export const AdminHistoryTimeline = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  
+
   const initialFormState: HistoryTimelineFormData = {
     year: new Date().getFullYear(),
     title: '',
@@ -31,7 +31,7 @@ export const AdminHistoryTimeline = () => {
     relatedPostId: '',
     displayOrder: 0,
   };
-  
+
   const [formData, setFormData] = useState<HistoryTimelineFormData>(initialFormState);
 
   const fetchTimelines = useCallback(async () => {
@@ -99,9 +99,9 @@ export const AdminHistoryTimeline = () => {
     }
   };
 
-  const filteredTimelines = timelines.filter(t => 
-    t.title.toLowerCase().includes(keyword.toLowerCase()) || 
-    t.year.toString().includes(keyword)
+  const filteredTimelines = timelines.filter(
+    (t) =>
+      t.title.toLowerCase().includes(keyword.toLowerCase()) || t.year.toString().includes(keyword)
   );
 
   return (
@@ -167,12 +167,12 @@ export const AdminHistoryTimeline = () => {
                     <td className="py-4">
                       <div>
                         <p className="text-sm font-bold text-basalt-soil">{timeline.title}</p>
-                        <p className="text-xs text-slate-400 line-clamp-1 max-w-sm">{timeline.description}</p>
+                        <p className="text-xs text-slate-400 line-clamp-1 max-w-sm">
+                          {timeline.description}
+                        </p>
                       </div>
                     </td>
-                    <td className="py-4 text-sm text-slate-600">
-                      {timeline.locationName || '-'}
-                    </td>
+                    <td className="py-4 text-sm text-slate-600">{timeline.locationName || '-'}</td>
                     <td className="py-4">
                       <div className="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded inline-block">
                         {timeline.displayOrder || 0}
@@ -238,7 +238,9 @@ export const AdminHistoryTimeline = () => {
                 <input
                   type="number"
                   value={formData.displayOrder}
-                  onChange={(e) => setFormData({ ...formData, displayOrder: Number(e.target.value) })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, displayOrder: Number(e.target.value) })
+                  }
                   className="w-full px-5 py-3 bg-slate-50 border-none rounded-2xl text-sm focus:ring-2 focus:ring-forest-leaf/20"
                   placeholder="0"
                 />

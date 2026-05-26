@@ -13,7 +13,13 @@ interface PostCardProps {
   onDelete?: () => void;
 }
 
-export const PostCard = ({ post, showActions = false, showStatusBadge = false, onEdit, onDelete }: PostCardProps) => {
+export const PostCard = ({
+  post,
+  showActions = false,
+  showStatusBadge = false,
+  onEdit,
+  onDelete,
+}: PostCardProps) => {
   return (
     <article className="bg-white rounded-2xl overflow-hidden border border-outline-variant/20 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col">
       <div className="relative h-52 overflow-hidden bg-surface-container">

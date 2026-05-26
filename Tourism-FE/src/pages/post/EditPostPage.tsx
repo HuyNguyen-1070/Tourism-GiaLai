@@ -55,7 +55,7 @@ export const EditPostPage = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-[1200px] mx-auto space-y-8">
       {/* Back nav */}
       <button
         onClick={() => navigate(-1)}

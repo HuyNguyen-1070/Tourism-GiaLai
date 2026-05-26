@@ -88,8 +88,7 @@ export const adminApi = {
 
   createHistoryTimeline: (data: any) => api.post('/admin/history-timeline', data),
 
-  updateHistoryTimeline: (id: string, data: any) =>
-    api.put(`/admin/history-timeline/${id}`, data),
+  updateHistoryTimeline: (id: string, data: any) => api.put(`/admin/history-timeline/${id}`, data),
 
   deleteHistoryTimeline: (id: string) => api.delete(`/admin/history-timeline/${id}`),
 };
