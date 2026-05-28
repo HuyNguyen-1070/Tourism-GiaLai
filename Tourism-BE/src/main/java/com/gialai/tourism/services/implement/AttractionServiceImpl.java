@@ -15,7 +15,6 @@ import com.gialai.tourism.services.PostService;
 import com.gialai.tourism.specifications.PostSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,16 +38,15 @@ public class AttractionServiceImpl implements AttractionService {
                                                            List<String> tags,
                                                            String keyword,
                                                            String sort) {
-        List<String> allTags = new ArrayList<>();
-        allTags.add(LOCATION_TAG);
-        if (tags != null && !tags.isEmpty()) {
-            allTags.addAll(tags.stream().map(String::toUpperCase).toList());
-        }
-
         Specification<Post> spec = Specification.allOf(
                 PostSpecification.hasStatus(PostStatus.APPROVED),
-                PostSpecification.hasTags(allTags)
+                PostSpecification.hasTags(Collections.singletonList(LOCATION_TAG))
         );
+
+        if (tags != null && !tags.isEmpty()) {
+            List<String> upperTags = tags.stream().map(String::toUpperCase).collect(Collectors.toList());
+            spec = spec.and(PostSpecification.hasTags(upperTags));
+        }
 
         if (keyword != null && !keyword.isBlank()) {
             spec = spec.and(PostSpecification.containsKeyword(keyword));
@@ -128,7 +126,7 @@ public class AttractionServiceImpl implements AttractionService {
                 ? Sort.Direction.ASC : Sort.Direction.DESC;
 
         if ("engagementScore".equalsIgnoreCase(field)) {
-            return JpaSort.unsafe(direction, "(p.viewCount + p.likeCount + p.favoriteCount)");
+            return Sort.by(direction, "engagementScore");
         }
         return Sort.by(direction, field);
     }

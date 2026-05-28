@@ -20,6 +20,12 @@ public class AdminHistoryTimelineController {
 
     private final HistoryTimelineService historyTimelineService;
 
+    @GetMapping
+    public ResponseEntity<ApiResponse> getAll() {
+        return ResponseEntity.ok(buildResponse(HttpStatus.OK, "History timelines fetched successfully",
+                historyTimelineService.getAll()));
+    }
+
     @PostMapping
     public ResponseEntity<ApiResponse> create(@Valid @RequestBody HistoryTimelineRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)

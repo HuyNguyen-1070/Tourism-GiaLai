@@ -4,7 +4,7 @@ import { TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/utils/constants';
 import { store } from '@/store/store';
 import { logout } from '@/store/slices/authSlice';
 
-const EXCLUDED_AUTH_URLS = ['/api/auth/login', '/api/auth/refresh-token'];
+const EXCLUDED_AUTH_URLS = ['/auth/login', '/auth/refresh-token', '/auth/register'];
 
 const isAuthExcluded = (url?: string): boolean => {
   if (!url) return false;

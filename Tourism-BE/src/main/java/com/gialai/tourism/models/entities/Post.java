@@ -56,6 +56,9 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private int ratingCount;
 
+    @org.hibernate.annotations.Formula("view_count + like_count + favorite_count")
+    private Long engagementScore;
+
     @ElementCollection
     @CollectionTable(name = "post_images", joinColumns = @JoinColumn(name = "post_id"))
     @Column(name = "image_url")
