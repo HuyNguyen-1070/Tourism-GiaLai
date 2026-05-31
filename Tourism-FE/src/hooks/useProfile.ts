@@ -9,7 +9,7 @@ import { updateUserInfo } from '@/store/slices/authSlice';
 interface ApiError {
   response?: {
     data?: {
-      message?: string;
+      message?: string | Record<string, string>;
     };
   };
 }
@@ -17,7 +17,12 @@ interface ApiError {
 const getErrorMessage = (err: unknown, fallback: string): string => {
   if (err && typeof err === 'object' && 'response' in err) {
     const apiErr = err as ApiError;
-    return apiErr.response?.data?.message || fallback;
+    const msg = apiErr.response?.data?.message;
+    if (typeof msg === 'string') return msg;
+    if (typeof msg === 'object' && msg !== null) {
+      return Object.values(msg)[0] || fallback;
+    }
+    return fallback;
   }
   if (err instanceof Error) return err.message;
   return fallback;

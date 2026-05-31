@@ -5,7 +5,7 @@ export interface SearchPostResponse {
   id: string;
   title: string;
   summary: string;
-  tags: string[];
+  tags: string[] | null;
   thumbnailUrl: string | null;
   sourceType: 'AUTHOR' | 'EXTERNAL';
   authorUsername: string | null;

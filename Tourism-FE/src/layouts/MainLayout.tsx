@@ -8,11 +8,22 @@ import {
   Bell,
   Menu,
   X,
-  Search as SearchIcon,
-  Map as MapIcon,
+  FileText,
+  Heart,
+  Bookmark,
+  Settings,
+  PlusCircle,
 } from 'lucide-react';
 import { Role } from '@/types/auth';
 import { useState } from 'react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export const MainLayout = () => {
   const { user, logout, isAuthenticated } = useAuth();
@@ -121,33 +132,81 @@ export const MainLayout = () => {
 
                 <div className="h-8 w-[1px] bg-basalt-soil/10 hidden md:block"></div>
 
-                <Link
-                  to={user?.roles?.includes(Role.ADMIN) ? '/admin/profile' : '/user/profile'}
-                  className="flex items-center gap-2 font-label-md text-label-md text-on-surface-variant hover:text-forest-leaf transition-all px-2 py-1 rounded-full hover:bg-forest-leaf/5"
-                >
-                  {user?.avatar ? (
-                    <img
-                      src={user.avatar}
-                      alt="avatar"
-                      className="w-8 h-8 rounded-full object-cover border border-forest-leaf/20"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-forest-leaf/10 flex items-center justify-center">
-                      <UserIcon className="w-4 h-4 text-forest-leaf" />
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="outline-none">
+                    <div className="flex items-center gap-2 font-label-md text-label-md text-on-surface-variant hover:text-forest-leaf transition-all px-2 py-1 rounded-full hover:bg-forest-leaf/5 cursor-pointer">
+                      {user?.avatar ? (
+                        <img
+                          src={user.avatar}
+                          alt="avatar"
+                          className="w-8 h-8 rounded-full object-cover border border-forest-leaf/20"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-forest-leaf/10 flex items-center justify-center">
+                          <UserIcon className="w-4 h-4 text-forest-leaf" />
+                        </div>
+                      )}
+                      <span className="hidden sm:inline font-semibold">
+                        {user?.fullName || user?.username}
+                      </span>
                     </div>
-                  )}
-                  <span className="hidden sm:inline font-semibold">
-                    {user?.fullName || user?.username}
-                  </span>
-                </Link>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-56 mt-2 bg-white border border-outline/10 shadow-md"
+                  >
+                    <DropdownMenuLabel className="font-headline-sm text-primary">
+                      Tài khoản của tôi
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild className="cursor-pointer">
+                      <Link
+                        to={user?.roles?.includes(Role.ADMIN) ? '/admin/profile' : '/user/profile'}
+                        className="flex items-center gap-2"
+                      >
+                        <UserIcon className="w-4 h-4" />
+                        <span>Hồ sơ cá nhân</span>
+                      </Link>
+                    </DropdownMenuItem>
 
-                <button
-                  onClick={handleLogout}
-                  className="p-2 text-on-surface-variant hover:text-error transition-colors"
-                  title="Đăng xuất"
-                >
-                  <LogOut className="w-5 h-5" />
-                </button>
+                    <DropdownMenuItem asChild className="cursor-pointer">
+                      <Link to="/user/create-post" className="flex items-center gap-2">
+                        <PlusCircle className="w-4 h-4 text-forest-leaf" />
+                        <span className="text-forest-leaf font-medium">Viết bài mới</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild className="cursor-pointer">
+                      <Link to="/user/my-posts" className="flex items-center gap-2">
+                        <FileText className="w-4 h-4" />
+                        <span>Bài viết của tôi</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild className="cursor-pointer">
+                      <Link to="/user/favorites" className="flex items-center gap-2">
+                        <Bookmark className="w-4 h-4" />
+                        <span>Bài viết đã lưu</span>
+                      </Link>
+                    </DropdownMenuItem>
+
+                    {user?.roles?.includes(Role.ADMIN) && (
+                      <DropdownMenuItem asChild className="cursor-pointer">
+                        <Link to="/admin/dashboard" className="flex items-center gap-2">
+                          <Settings className="w-4 h-4" />
+                          <span>Trang quản trị</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={handleLogout}
+                      className="cursor-pointer text-error focus:text-error focus:bg-error/5"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      <span>Đăng xuất</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </>
             ) : (
               <div className="flex items-center gap-2">

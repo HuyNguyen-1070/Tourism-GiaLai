@@ -20,12 +20,15 @@ export const PostCard = ({
   onEdit,
   onDelete,
 }: PostCardProps) => {
+  const displayImage =
+    post.thumbnail || (post.images && post.images.length > 0 ? post.images[0] : null);
+
   return (
     <article className="bg-white rounded-2xl overflow-hidden border border-outline-variant/20 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col">
       <div className="relative h-52 overflow-hidden bg-surface-container">
-        {post.thumbnail ? (
+        {displayImage ? (
           <img
-            src={post.thumbnail}
+            src={displayImage}
             alt={post.title}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           />

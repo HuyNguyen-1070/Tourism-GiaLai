@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TOKEN_KEY, REFRESH_TOKEN_KEY, USER_KEY } from '@/utils/constants';
-import { isTokenExpired } from '@/utils/tokenUtils';
+import { USER_KEY, TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/utils/constants';
 import { User } from '@/types/auth';
 
 interface AuthState {
@@ -22,19 +21,6 @@ const loadFromStorage = (): AuthState => {
 
   if (accessToken && refreshToken && accountStr) {
     try {
-      // Kiểm tra refreshToken hết hạn chưa (refreshToken tồn tại lâu hơn accessToken)
-      // Nếu refreshToken còn hạn → có thể refresh lại accessToken → vẫn authenticated
-      // Nếu refreshToken hết hạn → cả session đã hết hạn → phải đăng nhập lại
-      const refreshExpired = isTokenExpired(refreshToken, 0);
-
-      if (refreshExpired) {
-        // Cả session hết hạn → xóa hết và yêu cầu đăng nhập lại
-        localStorage.removeItem(TOKEN_KEY);
-        localStorage.removeItem(REFRESH_TOKEN_KEY);
-        localStorage.removeItem(USER_KEY);
-        return { isAuthenticated: false, account: null, accessToken: null, refreshToken: null };
-      }
-
       const account = JSON.parse(accountStr);
       return { isAuthenticated: true, account, accessToken, refreshToken };
     } catch {

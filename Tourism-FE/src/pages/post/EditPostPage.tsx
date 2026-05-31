@@ -38,10 +38,10 @@ export const EditPostPage = () => {
   }) => {
     const payload: CreatePostPayload = {
       ...data,
-      tags: data.tags.map((tag) => ({ name: tag })) as unknown as CreatePostPayload['tags'],
+      tags: data.tags as CreatePostPayload['tags'],
     };
     await updatePost(post.id, payload);
-    navigate('/my-posts');
+    navigate('/user/my-posts');
   };
 
   const defaultValues = {

@@ -7,32 +7,53 @@ interface RatingInputProps {
   size?: number;
 }
 
-const RATING_VALUES = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
-
 export const RatingInput = ({ value, onChange, size = 28 }: RatingInputProps) => {
   const [hover, setHover] = useState<number | null>(null);
+  const currentScore = hover !== null ? hover : (value ?? 0);
 
   return (
     <div className="flex items-center gap-1">
-      {RATING_VALUES.map((score) => (
-        <button
-          key={score}
-          type="button"
-          onMouseEnter={() => setHover(score)}
-          onMouseLeave={() => setHover(null)}
-          onClick={() => onChange(score)}
-          className="transition-transform hover:scale-110"
-        >
-          <Star
-            size={size}
-            className={`${
-              (hover !== null ? score <= hover : value !== null && score <= value)
-                ? 'fill-secondary text-secondary'
-                : 'text-outline-variant'
-            } transition-colors`}
-          />
-        </button>
-      ))}
+      {[1, 2, 3, 4, 5].map((index) => {
+        const isFull = currentScore >= index;
+        const isHalf = currentScore >= index - 0.5 && currentScore < index;
+
+        return (
+          <div
+            key={index}
+            className="relative cursor-pointer transition-transform hover:scale-110"
+            style={{ width: size, height: size }}
+          >
+            {/* Background Empty Star */}
+            <Star size={size} className="text-outline-variant absolute top-0 left-0" />
+
+            {/* Filled Star Overlay */}
+            {(isFull || isHalf) && (
+              <div
+                className="absolute top-0 left-0 overflow-hidden"
+                style={{ width: isHalf ? '50%' : '100%' }}
+              >
+                <Star size={size} className="fill-amber-400 text-amber-400" />
+              </div>
+            )}
+
+            {/* Clickable hitboxes for half and full star */}
+            <div className="absolute inset-0 flex z-10">
+              <div
+                className="w-1/2 h-full"
+                onMouseEnter={() => setHover(index - 0.5)}
+                onMouseLeave={() => setHover(null)}
+                onClick={() => onChange(index - 0.5)}
+              />
+              <div
+                className="w-1/2 h-full"
+                onMouseEnter={() => setHover(index)}
+                onMouseLeave={() => setHover(null)}
+                onClick={() => onChange(index)}
+              />
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 };

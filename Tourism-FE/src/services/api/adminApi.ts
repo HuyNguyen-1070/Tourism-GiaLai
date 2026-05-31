@@ -8,7 +8,8 @@ import {
   PostEngagement,
   AdminLog,
 } from '@/types/admin';
-import { PaginatedResponse } from '@/types/content';
+import { HistoryTimeline, ApiResponse, PaginatedResponse } from '@/types/content';
+import { Post } from '@/types/post';
 
 export interface TagAdminResponse {
   id: string;
@@ -25,9 +26,17 @@ export interface LocationRequest {
   placeId?: string;
 }
 
+type HistoryTimelinePayload = Omit<
+  HistoryTimeline,
+  'id' | 'createdAt' | 'updatedAt' | 'relatedPost'
+> & {
+  relatedPostId?: string;
+};
+
 export const adminApi = {
   // User Management
-  getUsers: (params: any) => api.get<PaginatedResponse<UserSummary>>('/admin/users', { params }),
+  getUsers: (params?: Record<string, unknown>) =>
+    api.get<PaginatedResponse<UserSummary>>('/admin/users', { params }),
 
   getUserDetail: (userId: string) => api.get<UserDetail>(`/admin/users/${userId}`),
 
@@ -37,7 +46,8 @@ export const adminApi = {
     api.patch(`/admin/users/${userId}/role`, data),
 
   // Post Management
-  getPosts: (params: any) => api.get<PaginatedResponse<any>>('/admin/posts', { params }),
+  getPosts: (params?: Record<string, unknown>) =>
+    api.get<PaginatedResponse<Post>>('/admin/posts', { params }),
 
   approvePost: (postId: string) => api.patch(`/admin/posts/${postId}/approve`),
 
@@ -48,7 +58,7 @@ export const adminApi = {
 
   // Tag Management
   getTags: (keyword?: string) =>
-    api.get<TagAdminResponse[]>('/admin/tags', { params: { keyword } }),
+    api.get<ApiResponse<TagAdminResponse[]>>('/admin/tags', { params: { keyword } }),
 
   createTag: (name: string) => api.post('/admin/tags', { name }),
 
@@ -81,14 +91,17 @@ export const adminApi = {
     }),
 
   // Admin Logs
-  getLogs: (params: any) => api.get<PaginatedResponse<AdminLog>>('/admin/logs', { params }),
+  getLogs: (params?: Record<string, unknown>) =>
+    api.get<PaginatedResponse<AdminLog>>('/admin/logs', { params }),
 
   // History Timeline Management
-  getHistoryTimelines: () => api.get<any[]>('/admin/history-timeline'),
+  getHistoryTimelines: () => api.get<HistoryTimeline[]>('/admin/history-timeline'),
 
-  createHistoryTimeline: (data: any) => api.post('/admin/history-timeline', data),
+  createHistoryTimeline: (data: HistoryTimelinePayload) =>
+    api.post('/admin/history-timeline', data),
 
-  updateHistoryTimeline: (id: string, data: any) => api.put(`/admin/history-timeline/${id}`, data),
+  updateHistoryTimeline: (id: string, data: HistoryTimelinePayload) =>
+    api.put(`/admin/history-timeline/${id}`, data),
 
   deleteHistoryTimeline: (id: string) => api.delete(`/admin/history-timeline/${id}`),
 };

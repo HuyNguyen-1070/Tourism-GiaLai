@@ -244,7 +244,9 @@ public class AccountServiceImpl implements AccountService {
                 Role userRole = roleService.getByType(RoleType.USER).orElseThrow();
                 Account newAccount = Account.builder()
                         .email(email)
-                        .username(email.split("@")[0] + "_" + System.currentTimeMillis())
+                        .username((email.split("@")[0].length() > 20
+                                ? email.split("@")[0].substring(0, 20)
+                                : email.split("@")[0]) + "_" + (100000 + new java.util.Random().nextInt(900000)))
                         .fullName(fullName)
                         .avatar(pictureUrl)
                         .provider(AuthProvider.GOOGLE)

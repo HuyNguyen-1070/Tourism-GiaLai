@@ -92,20 +92,20 @@ export const CommentItem = ({ comment, postId }: CommentItemProps) => {
         )}
 
         {(isOwner || isAdmin) && !isEditing && (
-          <div className="flex gap-3 mt-2">
+          <div className="flex gap-4 mt-3 pt-3 border-t border-outline-variant/10">
             {isOwner && (
               <button
                 onClick={() => setIsEditing(true)}
-                className="text-xs text-secondary hover:underline flex items-center gap-1"
+                className="text-[13px] font-medium text-on-surface-variant hover:text-forest-leaf flex items-center gap-1.5 transition-colors"
               >
-                <Pencil size={12} /> Sửa
+                <Pencil size={14} /> Sửa
               </button>
             )}
             <button
               onClick={() => deleteMutation.mutate()}
-              className="text-xs text-error hover:underline flex items-center gap-1"
+              className="text-[13px] font-medium text-on-surface-variant hover:text-error flex items-center gap-1.5 transition-colors"
             >
-              <Trash2 size={12} /> Xóa
+              <Trash2 size={14} /> Xóa
             </button>
           </div>
         )}

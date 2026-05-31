@@ -94,7 +94,7 @@ export const MyPostsPage = () => {
               />
             </div>
             <Button
-              onClick={() => navigate('/create-post')}
+              onClick={() => navigate('/user/create-post')}
               className="bg-forest-leaf hover:bg-forest-leaf/90 gap-2 whitespace-nowrap"
             >
               <Plus className="w-4 h-4" />
@@ -120,7 +120,7 @@ export const MyPostsPage = () => {
               : `Không có bài viết nào ở trạng thái này.`}
           </p>
           <Button
-            onClick={() => navigate('/create-post')}
+            onClick={() => navigate('/user/create-post')}
             className="bg-forest-leaf hover:bg-forest-leaf/90"
           >
             Đăng bài ngay

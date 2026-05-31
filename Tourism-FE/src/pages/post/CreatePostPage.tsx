@@ -12,17 +12,17 @@ export const CreatePostPage = () => {
 
   const handleSubmit = async (data: CreatePostData) => {
     await createPost(data);
-    navigate('/my-posts');
+    navigate('/user/my-posts');
   };
 
   return (
-    <div className="max-w-[1200px] mx-auto space-y-8">
+    <div className="max-w-[1200px] mx-auto space-y-8 px-4 sm:px-6 lg:px-8 py-8">
       {/* Back nav */}
       <button
         onClick={() => navigate(-1)}
         className="flex items-center gap-2 text-sm text-on-surface-variant hover:text-forest-leaf transition-colors"
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ArrowLeft className="w-4 h-4 mr-1" />
         Quay lại
       </button>
 

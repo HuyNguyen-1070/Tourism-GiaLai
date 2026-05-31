@@ -20,19 +20,19 @@ export const RatingStars = ({
   return (
     <div className="flex items-center gap-0.5">
       {[...Array(fullStars)].map((_, i) => (
-        <Star key={`full-${i}`} size={size} className="fill-secondary text-secondary" />
+        <Star key={`full-${i}`} size={size} className="fill-amber-400 text-amber-400" />
       ))}
       {hasHalfStar && (
         <div className="relative">
-          <Star size={size} className="text-secondary" />
+          <Star size={size} className="text-slate-300" />
           <div className="absolute inset-0 overflow-hidden w-1/2">
-            <Star size={size} className="fill-secondary text-secondary" />
+            <Star size={size} className="fill-amber-400 text-amber-400" />
           </div>
         </div>
       )}
       {showEmpty &&
         [...Array(emptyStars)].map((_, i) => (
-          <Star key={`empty-${i}`} size={size} className="text-outline-variant" />
+          <Star key={`empty-${i}`} size={size} className="text-slate-300" />
         ))}
     </div>
   );

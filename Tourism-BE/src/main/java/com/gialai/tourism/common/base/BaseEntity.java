@@ -2,14 +2,16 @@ package com.gialai.tourism.common.base;
 
 import com.gialai.tourism.common.utils.Util;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
 @MappedSuperclass
-@Data
+@Getter
+@Setter
 public abstract class BaseEntity {
     @Id
     @Column(name = "id", updatable = false, columnDefinition = "VARCHAR(20)", nullable = false)

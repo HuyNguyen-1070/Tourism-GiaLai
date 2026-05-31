@@ -59,14 +59,15 @@ public enum ErrorCode {
     POST_NOT_AVAILABLE("Post '%s' not found or not available", HttpStatus.NOT_FOUND),
     COMMENT_NOT_FOUND("Comment '%s' not found", HttpStatus.NOT_FOUND),
     NOT_COMMENT_OWNER("You do not have permission to edit this comment", HttpStatus.FORBIDDEN),
-    INVALID_RATING_SCORE("Score must be between 0.0 and 5.0 with step 0.5 (e.g., 0.5, 1.0, ..., 5.0)", HttpStatus.BAD_REQUEST),
+    INVALID_RATING_SCORE("Score must be between 0.0 and 5.0 with step 0.5 (e.g., 0.5, 1.0, ..., 5.0)",
+            HttpStatus.BAD_REQUEST),
     RATING_ALREADY_EXISTS("You have already rated this post", HttpStatus.CONFLICT),
 
     // === System & Uncategorized ===
     NOT_IMPLEMENTED("Feature not implemented", HttpStatus.NOT_IMPLEMENTED),
-    DATABASE_ERROR("Database error", HttpStatus.NOT_IMPLEMENTED),
-    UNCATEGORIZED_EXCEPTION("Unexpected error occurred", HttpStatus.NOT_IMPLEMENTED),
-    GENERATE_TOKEN_EXCEPTION("Failed to generate token", HttpStatus.NOT_IMPLEMENTED);
+    DATABASE_ERROR("Database error", HttpStatus.INTERNAL_SERVER_ERROR),
+    UNCATEGORIZED_EXCEPTION("Unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR),
+    GENERATE_TOKEN_EXCEPTION("Failed to generate token", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final String message;
     private final HttpStatus httpStatus;

@@ -27,6 +27,13 @@ export interface TagResponse {
   name: string;
 }
 
+export interface ApiResponse<T> {
+  code: number;
+  status: string;
+  message: string;
+  data: T;
+}
+
 export interface PaginatedResponse<T> {
   content: T[];
   page: number;

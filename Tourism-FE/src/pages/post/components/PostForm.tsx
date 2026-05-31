@@ -2,13 +2,12 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { RichTextEditor } from './RichTextEditor';
-import { ImageUploader } from './ImageUploader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Tag } from '@/types/post';
-import { ImageIcon, Tags, Globe, Send, Edit3, Eye } from 'lucide-react';
-import { useState } from 'react';
+import { Tags, Globe, Send, Edit3, Eye } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { adminApi, TagAdminResponse } from '@/services/api/adminApi';
 
 const postSchema = z
   .object({
@@ -17,20 +16,7 @@ const postSchema = z
       message: 'Nội dung phải có ít nhất 50 ký tự (không tính HTML)',
     }),
     summary: z.string().max(500, 'Tóm tắt tối đa 500 ký tự').optional(),
-    tags: z
-      .array(
-        z.enum([
-          'LOCATION',
-          'CULTURE',
-          'HISTORY',
-          'FESTIVAL',
-          'FOOD',
-          'ACCOMMODATION',
-          'TRANSPORT',
-        ] as const)
-      )
-      .min(1, 'Chọn ít nhất 1 thẻ')
-      .max(5, 'Tối đa 5 thẻ'),
+    tags: z.array(z.string()).min(1, 'Chọn ít nhất 1 thẻ').max(5, 'Tối đa 5 thẻ'),
     images: z.array(z.string()).max(10, 'Tối đa 10 ảnh').optional(),
     sourceType: z.enum(['AUTHOR', 'EXTERNAL']),
     sourceName: z.string().optional(),
@@ -51,7 +37,15 @@ const stripHtml = (html: string) => {
   return tmp.textContent || tmp.innerText || '';
 };
 
-const AVAILABLE_TAGS: { value: Tag; label: string; emoji: string }[] = [
+const extractImageUrls = (html: string) => {
+  const tmp = document.createElement('DIV');
+  tmp.innerHTML = html;
+  return Array.from(tmp.querySelectorAll('img'))
+    .map((img) => img.src)
+    .filter((src): src is string => Boolean(src));
+};
+
+const DEFAULT_TAGS: { value: string; label: string; emoji: string }[] = [
   { value: 'LOCATION', label: 'Địa điểm', emoji: '📍' },
   { value: 'CULTURE', label: 'Văn hóa', emoji: '🎭' },
   { value: 'HISTORY', label: 'Lịch sử', emoji: '📜' },
@@ -60,6 +54,26 @@ const AVAILABLE_TAGS: { value: Tag; label: string; emoji: string }[] = [
   { value: 'ACCOMMODATION', label: 'Lưu trú', emoji: '🏨' },
   { value: 'TRANSPORT', label: 'Di chuyển', emoji: '🚌' },
 ];
+
+const LABEL_MAP: Record<string, string> = {
+  LOCATION: 'Địa điểm',
+  CULTURE: 'Văn hóa',
+  HISTORY: 'Lịch sử',
+  FESTIVAL: 'Lễ hội',
+  FOOD: 'Ẩm thực',
+  ACCOMMODATION: 'Lưu trú',
+  TRANSPORT: 'Di chuyển',
+};
+
+const EMOJI_MAP: Record<string, string> = {
+  LOCATION: '📍',
+  CULTURE: '🎭',
+  HISTORY: '📜',
+  FESTIVAL: '🎪',
+  FOOD: '🍜',
+  ACCOMMODATION: '🏨',
+  TRANSPORT: '🚌',
+};
 
 interface PostFormProps {
   defaultValues?: Partial<PostFormValues>;
@@ -95,6 +109,13 @@ export const PostForm = ({
   submitLabel = 'Gửi xét duyệt',
 }: PostFormProps) => {
   const [activeTab, setActiveTab] = useState<'write' | 'preview'>('write');
+  const [availableTags, setAvailableTags] = useState<
+    {
+      value: string;
+      label: string;
+      emoji: string;
+    }[]
+  >(DEFAULT_TAGS);
 
   const {
     control,
@@ -116,10 +137,43 @@ export const PostForm = ({
     },
   });
 
+  const handleFormSubmit = async (data: PostFormValues) => {
+    const extractedImages = extractImageUrls(data.content);
+    const images =
+      data.images && data.images.length > 0 ? data.images : extractedImages.slice(0, 10);
+    await onSubmit({ ...data, images });
+  };
+
+  useEffect(() => {
+    const loadTags = async () => {
+      try {
+        const res = await adminApi.getTags();
+        const tags = res.data ?? [];
+
+        if (tags.length > 0) {
+          const mapped = tags.map((tag) => ({
+            value: tag.name,
+            label: LABEL_MAP[tag.name] || tag.name,
+            emoji: EMOJI_MAP[tag.name] || '🏷️',
+          }));
+          if (mapped.length > 0) {
+            setAvailableTags(mapped);
+            return;
+          }
+        }
+      } catch {
+        // fallback to defaults
+      }
+      setAvailableTags(DEFAULT_TAGS);
+    };
+
+    loadTags();
+  }, []);
+
   const sourceType = watch('sourceType');
   const selectedTags = watch('tags');
 
-  const toggleTag = (tag: Tag) => {
+  const toggleTag = (tag: string) => {
     if (selectedTags.includes(tag)) {
       setValue(
         'tags',
@@ -132,7 +186,7 @@ export const PostForm = ({
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(handleFormSubmit)}
       className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8"
     >
       {/* LEFT COLUMN: Main Content */}
@@ -241,27 +295,11 @@ export const PostForm = ({
 
       {/* RIGHT COLUMN: Sidebar (Sticky) */}
       <div className="space-y-6 lg:sticky lg:top-6 self-start">
-        {/* Images */}
-        <div className="bg-surface-container-low rounded-xl p-5 border border-outline-variant/20">
-          <SectionHeader
-            icon={ImageIcon}
-            title="Ảnh đại diện"
-            description="Ảnh đầu tiên sẽ làm đại diện"
-          />
-          <Controller
-            name="images"
-            control={control}
-            render={({ field }) => (
-              <ImageUploader images={field.value || []} onChange={field.onChange} maxImages={5} />
-            )}
-          />
-        </div>
-
         {/* Tags */}
         <div className="bg-surface-container-low rounded-xl p-5 border border-outline-variant/20">
           <SectionHeader icon={Tags} title="Thẻ phân loại" description="Chọn 1-5 thẻ" />
           <div className="flex flex-wrap gap-2">
-            {AVAILABLE_TAGS.map(({ value, label, emoji }) => (
+            {availableTags.map(({ value, label, emoji }) => (
               <button
                 type="button"
                 key={value}

@@ -13,5 +13,5 @@ public interface AdminPostService {
                                                int page, int size, String sortDir);
     PostResponse approvePost(String postId, String adminUsername);
     PostResponse rejectPost(String postId, String reason, String adminUsername);
-    void deletePost(String postId);
+    void deletePost(String postId, String adminUsername);
 }

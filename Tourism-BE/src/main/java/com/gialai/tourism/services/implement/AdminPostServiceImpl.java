@@ -10,6 +10,7 @@ import com.gialai.tourism.models.entities.Post;
 import com.gialai.tourism.models.mappers.PostMapper;
 import com.gialai.tourism.repositories.PostRepository;
 import com.gialai.tourism.services.AccountService;
+import com.gialai.tourism.services.AdminLogService;
 import com.gialai.tourism.services.AdminPostService;
 import com.gialai.tourism.services.NotificationService;
 import com.gialai.tourism.specifications.PostSpecification;
@@ -33,18 +34,23 @@ public class AdminPostServiceImpl implements AdminPostService {
     private final PostMapper postMapper;
     private final AccountService accountService;
     private final NotificationService notificationService;
+    private final AdminLogService adminLogService;
 
     @Override
     public PageResponse<PostSummaryResponse> getPosts(String status, List<String> tags, String keyword,
                                                       String authorId, LocalDateTime from, LocalDateTime to,
                                                       int page, int size, String sortDir) {
-        PostStatus postStatus = status != null ? PostStatus.valueOf(status.toUpperCase()) : PostStatus.PENDING;
+        // Base specification: not deleted
+        Specification<Post> spec = Specification.where(PostSpecification.notDeleted());
 
-        // Base specification: not deleted + status
-        Specification<Post> spec = Specification.allOf(
-                PostSpecification.notDeleted(),
-                PostSpecification.hasStatus(postStatus)
-        );
+        if (status != null && !status.equalsIgnoreCase("ALL")) {
+            try {
+                PostStatus postStatus = PostStatus.valueOf(status.toUpperCase());
+                spec = spec.and(PostSpecification.hasStatus(postStatus));
+            } catch (IllegalArgumentException e) {
+                // Ignore invalid status or handle accordingly
+            }
+        }
 
         if (tags != null && !tags.isEmpty()) {
             spec = spec.and(PostSpecification.hasTags(tags));   // hasTags now accepts List<String>
@@ -79,6 +85,9 @@ public class AdminPostServiceImpl implements AdminPostService {
         notificationService.notifyUser(post.getAuthor().getEmail(),
                 "Bài viết '" + post.getTitle() + "' đã được duyệt.",
                 post.getId(), NotificationType.POST_APPROVED);
+        
+        adminLogService.log(admin.getId(), "APPROVE_POST", post.getId(), "POST", "Duyệt bài: " + post.getTitle());
+        
         return postMapper.toResponse(post);
     }
 
@@ -95,12 +104,15 @@ public class AdminPostServiceImpl implements AdminPostService {
         notificationService.notifyUser(post.getAuthor().getEmail(),
                 "Bài viết '" + post.getTitle() + "' đã bị từ chối. Lý do: " + reason,
                 post.getId(), NotificationType.POST_REJECTED);
+        
+        adminLogService.log(admin.getId(), "REJECT_POST", post.getId(), "POST", "Từ chối bài: " + post.getTitle());
+        
         return postMapper.toResponse(post);
     }
 
     @Override
     @Transactional
-    public void deletePost(String postId) {
+    public void deletePost(String postId, String adminUsername) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND, postId));
         if (post.getStatus() == PostStatus.DELETED) {
@@ -108,6 +120,9 @@ public class AdminPostServiceImpl implements AdminPostService {
         }
         post.setStatus(PostStatus.DELETED);
         postRepository.save(post);
+        
+        Account admin = accountService.findByUsername(adminUsername);
+        adminLogService.log(admin.getId(), "DELETE_POST", post.getId(), "POST", "Xoá bài: " + post.getTitle());
     }
 
     private Post getPendingPost(String postId) {

@@ -285,7 +285,7 @@ public class PostInteractionServiceImpl implements PostInteractionService {
                 .authorAvatar(author.getAvatar())
                 .createdAt(comment.getCreatedAt())
                 .updatedAt(comment.getUpdatedAt())
-                .isEdited(!comment.getCreatedAt().equals(comment.getUpdatedAt()))
+                .isEdited(comment.getCreatedAt() != null && comment.getUpdatedAt() != null && !comment.getCreatedAt().equals(comment.getUpdatedAt()))
                 .build();
     }
 }

@@ -111,11 +111,11 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Transactional
     @Override
     public ToggleActiveResponse toggleActive(String userId, String adminId) {
-        if (userId.equals(adminId)) {
-            throw new AppException(ErrorCode.VALIDATION_ERROR, "Admin cannot lock their own account");
-        }
         Account target = accountRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND, "User"));
+        if (target.getUsername().equals(adminId)) {
+            throw new AppException(ErrorCode.VALIDATION_ERROR, "Admin cannot lock their own account");
+        }
         if (target.getRoles().stream().anyMatch(r -> r.getName() == RoleType.ADMIN)) {
             throw new AppException(ErrorCode.UNAUTHORIZED, "Cannot lock another Admin account");
         }

@@ -16,13 +16,17 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { PostStatusBadge } from '@/pages/post/components/PostStatusBadge';
+import { useSearchParams } from 'react-router-dom';
 
 export const AdminPostList = () => {
+  const [searchParams] = useSearchParams();
+  const userIdParams = searchParams.get('userId');
+
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [status, setStatus] = useState('PENDING');
+  const [status, setStatus] = useState('ALL');
   const [keyword, setKeyword] = useState('');
 
   const [rejectingPostId, setRejectingPostId] = useState<string | null>(null);
@@ -36,6 +40,7 @@ export const AdminPostList = () => {
         size: 10,
         status: status === 'ALL' ? undefined : status,
         keyword: keyword || undefined,
+        authorId: userIdParams || undefined,
         sort: status === 'PENDING' ? 'createdAt' : 'updatedAt',
         direction: status === 'PENDING' ? 'asc' : 'desc',
       });
@@ -46,7 +51,7 @@ export const AdminPostList = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, status, keyword]);
+  }, [page, status, keyword, userIdParams]);
 
   useEffect(() => {
     const timer = setTimeout(fetchPosts, 500);

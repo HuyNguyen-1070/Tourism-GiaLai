@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.multipart.MultipartException;
 
 import org.springframework.security.access.AccessDeniedException;
@@ -29,7 +30,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleGenericException(Exception exception, HttpServletRequest request) {
-        return buildResponseEntity(ErrorCode.UNCATEGORIZED_EXCEPTION, request.getRequestURI(), ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
+        return buildResponseEntity(ErrorCode.UNCATEGORIZED_EXCEPTION, request.getRequestURI(),
+                ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
     }
 
     @ExceptionHandler(AppException.class)
@@ -37,12 +39,21 @@ public class GlobalExceptionHandler {
         return buildResponseEntity(exception.getErrorCode(), request.getRequestURI(), exception.getFormattedMessage());
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ExceptionResponse> handleAccessDenied(AccessDeniedException exception, HttpServletRequest request) {
-        return buildResponseEntity(ErrorCode.UNAUTHORIZED, request.getRequestURI(), ErrorCode.UNAUTHORIZED.getMessage());
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ExceptionResponse> handleDataIntegrityViolation(DataIntegrityViolationException exception,
+            HttpServletRequest request) {
+        return buildResponseEntity(ErrorCode.DATABASE_ERROR, request.getRequestURI(),
+                ErrorCode.DATABASE_ERROR.getMessage());
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ExceptionResponse> handleAccessDenied(AccessDeniedException exception,
+            HttpServletRequest request) {
+        return buildResponseEntity(ErrorCode.UNAUTHORIZED, request.getRequestURI(),
+                ErrorCode.UNAUTHORIZED.getMessage());
+    }
+
+    @ExceptionHandler({ MethodArgumentNotValidException.class, HttpMessageNotReadableException.class })
     public ResponseEntity<ExceptionResponse> handleValidationExceptions(Exception ex, HttpServletRequest request) {
         if (ex instanceof MethodArgumentNotValidException validationEx) {
             Map<String, String> messages = new HashMap<>();
@@ -51,18 +62,22 @@ public class GlobalExceptionHandler {
             }
             return buildResponseEntity(ErrorCode.VALIDATION_ERROR, request.getRequestURI(), messages);
         } else {
-            return buildResponseEntity(ErrorCode.VALIDATION_ERROR, request.getRequestURI(), ErrorCode.VALIDATION_ERROR.getMessage());
+            return buildResponseEntity(ErrorCode.VALIDATION_ERROR, request.getRequestURI(),
+                    ErrorCode.VALIDATION_ERROR.getMessage());
         }
     }
 
-    @ExceptionHandler({MaxUploadSizeExceededException.class, MultipartException.class})
-    public ResponseEntity<ExceptionResponse> handleMaxUploadFileException(Exception exception, HttpServletRequest request){
-        return buildResponseEntity(ErrorCode.IMAGE_SIZE_EXCEEDED, request.getRequestURI(),ErrorCode.IMAGE_SIZE_EXCEEDED.getMessage());
+    @ExceptionHandler({ MaxUploadSizeExceededException.class, MultipartException.class })
+    public ResponseEntity<ExceptionResponse> handleMaxUploadFileException(Exception exception,
+            HttpServletRequest request) {
+        return buildResponseEntity(ErrorCode.IMAGE_SIZE_EXCEEDED, request.getRequestURI(),
+                ErrorCode.IMAGE_SIZE_EXCEEDED.getMessage());
     }
 
     @ExceptionHandler(IOException.class)
-    public ResponseEntity<ExceptionResponse> handleIOException(IOException exception, HttpServletRequest request){
-        return buildResponseEntity(ErrorCode.FILE_READ_ERROR, request.getRequestURI(), ErrorCode.FILE_READ_ERROR.getMessage());
+    public ResponseEntity<ExceptionResponse> handleIOException(IOException exception, HttpServletRequest request) {
+        return buildResponseEntity(ErrorCode.FILE_READ_ERROR, request.getRequestURI(),
+                ErrorCode.FILE_READ_ERROR.getMessage());
     }
 
     private ResponseEntity<ExceptionResponse> buildResponseEntity(ErrorCode errorCode, String path, Object message) {

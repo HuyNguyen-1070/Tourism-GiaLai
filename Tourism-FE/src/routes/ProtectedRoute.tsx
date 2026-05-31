@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '@/store/store';
 import { logout } from '@/store/slices/authSlice';
 import { Role } from '@/types/auth';
-import { isTokenExpired } from '@/utils/tokenUtils';
 
 interface ProtectedRouteProps {
   allowedRoles: Role[];
@@ -20,17 +19,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, children 
     return <Navigate to="/login" replace />;
   }
 
-  // Kiểm tra refreshToken hết hạn (refreshToken là token "sống" lâu nhất).
-  // Nếu refreshToken hết hạn → toàn bộ session hết hạn → đăng xuất và về login
-  if (isTokenExpired(refreshToken, 0)) {
-    dispatch(logout());
-    return <Navigate to="/login" replace />;
-  }
-
-  // Không có account hoặc không đúng role → đăng xuất
-  if (!account || !account.roles?.some((role) => allowedRoles.includes(role))) {
-    dispatch(logout());
-    return <Navigate to="/login" replace />;
+  // Không có account hoặc không đúng role → chuyển trang unauthorized (không logout)
+  if (!account || !account.roles?.some((role) => allowedRoles.includes(role as Role))) {
+    return <Navigate to="/unauthorized" replace />;
   }
 
   return <>{children}</>;

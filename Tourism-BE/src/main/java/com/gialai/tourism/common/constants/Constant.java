@@ -17,7 +17,8 @@ public class Constant {
             entry(Comment.class, "CMT"),
             entry(Rating.class, "RTG"),
             entry(Tag.class, "TAG"),
-            entry(Location.class, "LOC")
+            entry(Location.class, "LOC"),
+            entry(AdminLog.class, "ALOG")
     );
 
     public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
@@ -25,6 +26,7 @@ public class Constant {
     public static final String[] PUBLIC_ENDPOINTS = {
             "/api/awake",
             "/api/auth/login",
+            "/api/auth/google",
             "/api/auth/register",
             "/api/auth/forgot-password",
             "/api/auth/verify-otp",

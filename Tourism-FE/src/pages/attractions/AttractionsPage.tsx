@@ -13,6 +13,7 @@ import {
   Map as MapIcon,
 } from 'lucide-react';
 import { PaginatedResponse } from '@/types/content';
+import { AttractionsMap } from './components/AttractionsMap';
 
 export const AttractionsPage = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -96,9 +97,10 @@ export const AttractionsPage = () => {
               <button
                 onClick={() => setViewMode('map')}
                 className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all ${viewMode === 'map' ? 'bg-white text-basalt-soil shadow-lg' : 'text-white hover:bg-white/5'}`}
+                title="Xem vị trí các kết quả tìm kiếm trên bản đồ"
               >
                 <MapIcon className="w-4 h-4" />
-                Bản đồ
+                Vị trí kết quả
               </button>
             </div>
           </div>
@@ -152,17 +154,7 @@ export const AttractionsPage = () => {
       {/* Content */}
       <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop mt-12">
         {viewMode === 'map' ? (
-          <div className="w-full h-[600px] bg-white rounded-3xl border border-basalt-soil/5 shadow-xl flex items-center justify-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-slate-100 animate-pulse flex items-center justify-center">
-              <div className="text-center">
-                <MapIcon className="w-12 h-12 text-outline/30 mx-auto mb-4" />
-                <p className="text-on-surface-variant font-bold">
-                  Tính năng bản đồ đang được tích hợp...
-                </p>
-              </div>
-            </div>
-            {/* Map Integration Placeholder */}
-          </div>
+          <AttractionsMap keyword={keyword} activeTags={activeTags} />
         ) : (
           <>
             {loading ? (

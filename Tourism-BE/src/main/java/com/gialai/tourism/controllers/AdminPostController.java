@@ -34,7 +34,7 @@ public class AdminPostController {
     @Operation(summary = "Get posts with filters", security = @SecurityRequirement(name = "JWT"))
     public ApiResponse getPosts(@RequestParam(defaultValue = "0") int page,
                                 @RequestParam(defaultValue = "10") int size,
-                                @RequestParam(defaultValue = "PENDING") String status,
+                                @RequestParam(required = false) String status,
                                 @RequestParam(required = false) List<String> tags,
                                 @RequestParam(required = false) String keyword,
                                 @RequestParam(required = false) String authorId,
@@ -65,8 +65,9 @@ public class AdminPostController {
 
     @DeleteMapping("/{postId}")
     @Operation(summary = "Admin delete post", security = @SecurityRequirement(name = "JWT"))
-    public ApiResponse deletePost(@PathVariable String postId) {
-        adminPostService.deletePost(postId);
+    public ApiResponse deletePost(@PathVariable String postId,
+                                  @AuthenticationPrincipal UserDetails userDetails) {
+        adminPostService.deletePost(postId, userDetails.getUsername());
         return buildResponse(HttpStatus.NO_CONTENT, "Post deleted successfully", null);
     }
 

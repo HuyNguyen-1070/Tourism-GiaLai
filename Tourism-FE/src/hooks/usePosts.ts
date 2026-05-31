@@ -35,13 +35,12 @@ export const usePosts = (initialPage = 0, initialSize = 10) => {
     async (page?: number, status?: string, keyword?: string) => {
       setLoading(true);
       try {
-        const res = await postApi.getMyPosts({
+        const apiResponse = (await postApi.getMyPosts({
           page: page ?? pagination.page,
           size: pagination.size,
           status,
           keyword,
-        });
-        const apiResponse = res.data as unknown as ApiResponse<PostListResponse>;
+        })) as unknown as ApiResponse<PostListResponse>;
         const responseData = apiResponse.data;
         setPosts(responseData.content || []);
         setPagination({
@@ -95,8 +94,7 @@ export const usePostDetail = (postId: string) => {
     if (!postId) return;
     setLoading(true);
     try {
-      const res = await postApi.getPostById(postId);
-      const apiResponse = res.data as unknown as ApiResponse<Post>;
+      const apiResponse = (await postApi.getPostById(postId)) as unknown as ApiResponse<Post>;
       setPost(apiResponse.data || null);
       setError(null);
     } catch (err: unknown) {
@@ -123,8 +121,7 @@ export const useCreatePost = () => {
     async (data: CreatePostPayload) => {
       setLoading(true);
       try {
-        const res = await postApi.createPost(data);
-        const apiResponse = res.data as unknown as ApiResponse<Post>;
+        const apiResponse = (await postApi.createPost(data)) as unknown as ApiResponse<Post>;
         showToast('Bài viết đã được gửi và đang chờ duyệt', 'success');
         return apiResponse.data;
       } catch (err: unknown) {
@@ -149,8 +146,10 @@ export const useUpdatePost = () => {
     async (postId: string, data: UpdatePostPayload) => {
       setLoading(true);
       try {
-        const res = await postApi.updatePost(postId, data);
-        const apiResponse = res.data as unknown as ApiResponse<Post>;
+        const apiResponse = (await postApi.updatePost(
+          postId,
+          data
+        )) as unknown as ApiResponse<Post>;
         showToast('Cập nhật bài viết thành công, bài viết sẽ được duyệt lại', 'success');
         return apiResponse.data;
       } catch (err: unknown) {

@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { postApi } from '@/services/api/postApi';
 import { interactionApi } from '@/services/api/interactionApi';
@@ -17,6 +17,7 @@ import {
   Link as LinkIcon,
   Share2,
   Loader2,
+  Map as MapIcon,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
@@ -49,8 +50,11 @@ export const PostDetailPage = () => {
     onSuccess: (res) => {
       queryClient.setQueryData(['interaction', id], (old: any) => ({
         ...old,
-        liked: res.data.liked,
-        likeCount: res.data.likeCount,
+        data: {
+          ...old?.data,
+          liked: res.data.liked,
+          likeCount: res.data.likeCount,
+        },
       }));
       toast.success(res.data.liked ? 'Đã thích bài viết' : 'Bỏ thích thành công');
     },
@@ -63,8 +67,11 @@ export const PostDetailPage = () => {
     onSuccess: (res) => {
       queryClient.setQueryData(['interaction', id], (old: any) => ({
         ...old,
-        favorited: res.data.favorited,
-        favoriteCount: res.data.favoriteCount,
+        data: {
+          ...old?.data,
+          favorited: res.data.favorited,
+          favoriteCount: res.data.favoriteCount,
+        },
       }));
       toast.success(res.data.favorited ? 'Đã lưu bài viết' : 'Đã bỏ lưu');
     },
@@ -77,9 +84,12 @@ export const PostDetailPage = () => {
     onSuccess: (res) => {
       queryClient.setQueryData(['interaction', id], (old: any) => ({
         ...old,
-        myScore: res.data.myScore,
-        averageRating: res.data.averageRating,
-        ratingCount: res.data.ratingCount,
+        data: {
+          ...old?.data,
+          myScore: res.data.myScore,
+          averageRating: res.data.averageRating,
+          ratingCount: res.data.ratingCount,
+        },
       }));
       toast.success('Cảm ơn bạn đã đánh giá!');
     },
@@ -102,8 +112,8 @@ export const PostDetailPage = () => {
   const isLiked = interaction?.data?.liked || false;
   const isFavorited = interaction?.data?.favorited || false;
   const myScore = interaction?.data?.myScore ?? null;
-  const avgRating = p.averageRating ?? interaction?.data?.averageRating ?? 0;
-  const ratingCount = p.ratingCount ?? interaction?.data?.ratingCount ?? 0;
+  const avgRating = interaction?.data?.averageRating ?? p.averageRating ?? 0;
+  const ratingCount = interaction?.data?.ratingCount ?? p.ratingCount ?? 0;
 
   const handleRate = (score: number) => {
     if (!user) {
@@ -154,6 +164,16 @@ export const PostDetailPage = () => {
             <LinkIcon className="w-4 h-4" />
             <span>Nguồn: {p.sourceName}</span>
           </div>
+        )}
+        {/* View on Map button - shown for location-type posts */}
+        {p.tags.some((t) => ['LOCATION', 'ACCOMMODATION', 'FOOD', 'CULTURE'].includes(t)) && (
+          <Link
+            to={`/map?postId=${p.id}`}
+            className="ml-auto flex items-center gap-2 px-4 py-2 bg-forest-leaf text-white rounded-xl text-sm font-bold hover:bg-forest-leaf/90 transition-all shadow-sm hover:shadow-md"
+          >
+            <MapIcon className="w-4 h-4" />
+            Xem trên bản đồ
+          </Link>
         )}
       </div>
 
@@ -223,13 +243,26 @@ export const PostDetailPage = () => {
             Lưu bài
           </button>
 
-          <div className="flex items-center gap-3 ml-auto">
-            <div className="flex items-center gap-1">
-              <RatingStars rating={avgRating} size={18} />
-              <span className="text-sm font-semibold ml-1">{avgRating.toFixed(1)}</span>
-              <span className="text-xs text-outline">({ratingCount} đánh giá)</span>
+          <div className="flex items-center gap-4 ml-auto">
+            <div className="flex flex-col items-end">
+              <div className="flex items-center gap-1">
+                <span className="text-sm font-semibold">{avgRating.toFixed(1)}</span>
+                <RatingStars rating={avgRating} size={16} />
+              </div>
+              <span className="text-[11px] text-outline">({ratingCount} lượt đánh giá)</span>
             </div>
-            {user && <RatingInput value={myScore} onChange={handleRate} size={24} />}
+
+            {user && (
+              <>
+                <div className="w-px h-8 bg-outline-variant/30 hidden sm:block"></div>
+                <div className="flex flex-col items-center">
+                  <span className="text-[11px] font-medium text-on-surface-variant mb-1">
+                    Đánh giá của bạn
+                  </span>
+                  <RatingInput value={myScore} onChange={handleRate} size={20} />
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

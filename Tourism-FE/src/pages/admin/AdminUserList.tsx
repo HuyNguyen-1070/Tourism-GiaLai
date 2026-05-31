@@ -16,6 +16,15 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Role } from '@/types/auth';
+import { useNavigate } from 'react-router-dom';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Trash2, AlertCircle, FileText } from 'lucide-react';
 
 export const AdminUserList = () => {
   const [users, setUsers] = useState<UserSummary[]>([]);
@@ -25,6 +34,7 @@ export const AdminUserList = () => {
   const [keyword, setKeyword] = useState('');
   const [role, setRole] = useState('');
   const [isActive, setIsActive] = useState<boolean | undefined>(undefined);
+  const navigate = useNavigate();
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -74,14 +84,30 @@ export const AdminUserList = () => {
     }
   };
 
+  const handleSoftDelete = async (userId: string, activeStatus: boolean) => {
+    if (!activeStatus) {
+      toast.info('Tài khoản này đã bị xoá (hoặc khoá) rồi');
+      return;
+    }
+
+    const confirm = window.confirm(
+      'Bạn có chắc chắn muốn xoá tài khoản này không? (Tài khoản sẽ bị vô hiệu hoá, dữ liệu vẫn được bảo lưu)'
+    );
+    if (!confirm) return;
+
+    try {
+      await adminApi.toggleActive(userId);
+      toast.success('Xoá tài khoản thành công');
+      fetchUsers();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Có lỗi xảy ra');
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h1 className="text-2xl font-headline-md text-basalt-soil">Quản lý người dùng</h1>
-        <button className="flex items-center gap-2 px-6 py-3 bg-forest-leaf text-white rounded-2xl font-bold text-sm hover:shadow-lg hover:shadow-forest-leaf/20 transition-all">
-          <UserPlus className="w-4 h-4" />
-          Thêm quản trị viên
-        </button>
       </div>
 
       {/* Filters */}
@@ -205,9 +231,49 @@ export const AdminUserList = () => {
                               <Unlock className="w-4 h-4" />
                             )}
                           </button>
-                          <button className="p-2 text-slate-400 hover:text-forest-leaf hover:bg-forest-leaf/5 rounded-lg transition-colors">
-                            <MoreVertical className="w-4 h-4" />
-                          </button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <button className="p-2 text-slate-400 hover:text-forest-leaf hover:bg-forest-leaf/5 rounded-lg transition-colors">
+                                <MoreVertical className="w-4 h-4" />
+                              </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                              align="end"
+                              className="w-56 bg-white border border-slate-100 shadow-lg rounded-xl p-2 z-50"
+                            >
+                              <DropdownMenuItem
+                                className="cursor-pointer hover:bg-slate-50 p-2 rounded-lg text-sm text-slate-600 font-medium outline-none transition-colors"
+                                onClick={() => toast.info('Chức năng đang được phát triển')}
+                              >
+                                <Eye className="w-4 h-4 mr-2 text-slate-400" />
+                                Xem chi tiết hồ sơ
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className="cursor-pointer hover:bg-slate-50 p-2 rounded-lg text-sm text-slate-600 font-medium outline-none transition-colors"
+                                onClick={() => navigate(`/admin/posts?userId=${user.id}`)}
+                              >
+                                <FileText className="w-4 h-4 mr-2 text-blue-400" />
+                                Bài viết của người này
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className="cursor-pointer hover:bg-slate-50 p-2 rounded-lg text-sm text-slate-600 font-medium outline-none transition-colors"
+                                onClick={() =>
+                                  toast.info('Chức năng gửi cảnh báo đang được phát triển')
+                                }
+                              >
+                                <AlertCircle className="w-4 h-4 mr-2 text-yellow-500" />
+                                Gửi cảnh báo
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator className="bg-slate-100 my-1" />
+                              <DropdownMenuItem
+                                className="cursor-pointer hover:bg-red-50 p-2 rounded-lg text-sm text-red-600 font-bold outline-none transition-colors focus:text-red-700 focus:bg-red-100"
+                                onClick={() => handleSoftDelete(user.id, user.isActive)}
+                              >
+                                <Trash2 className="w-4 h-4 mr-2" />
+                                Xoá tài khoản
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
                       </td>
                     </tr>

@@ -77,46 +77,50 @@ export const SearchPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 pt-20">
-      {/* Search Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-20 z-30">
-        <div className="container-custom py-6">
-          <div className="max-w-4xl mx-auto relative">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+    <div className="min-h-screen bg-mist-beige pb-24">
+      {/* Hero Banner */}
+      <div className="bg-basalt-soil pt-32 pb-16 px-margin-mobile md:px-margin-desktop relative overflow-hidden">
+        <div className="absolute inset-0 ethnic-pattern opacity-10" />
+        <div className="max-w-container-max mx-auto relative z-10">
+          <h1 className="font-headline-lg text-4xl md:text-5xl text-white mb-8 text-center">
+            Khám phá Gia Lai
+          </h1>
+          <div className="max-w-3xl mx-auto relative group">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-white/60 group-focus-within:text-white transition-colors" />
             <input
               type="text"
-              placeholder="Khám phá Gia Lai: tiêu đề, nội dung, địa điểm..."
+              placeholder="Nhập tên địa điểm, văn hóa, ẩm thực..."
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              className="w-full pl-16 pr-6 py-5 bg-slate-100 border-none rounded-3xl text-lg font-medium focus:ring-4 focus:ring-forest-leaf/10 transition-all"
+              className="w-full pl-16 pr-6 py-5 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-lg font-medium text-white placeholder:text-white/50 focus:bg-white/20 focus:outline-none focus:ring-4 focus:ring-forest-leaf/30 transition-all"
             />
           </div>
         </div>
       </div>
 
-      <div className="container-custom py-12 flex flex-col lg:flex-row gap-12">
+      <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop mt-12 flex flex-col lg:flex-row gap-12">
         {/* Filters Sidebar */}
         <aside className="w-full lg:w-72 shrink-0 space-y-8">
-          <div>
-            <div className="flex justify-between items-center mb-6">
+          <div className="sticky top-24 bg-white p-6 rounded-3xl border border-basalt-soil/5 shadow-sm">
+            <div className="flex justify-between items-center mb-6 border-b border-basalt-soil/5 pb-4">
               <h3 className="text-sm font-bold text-basalt-soil uppercase tracking-widest flex items-center gap-2">
-                <Filter className="w-4 h-4" />
+                <Filter className="w-4 h-4 text-forest-leaf" />
                 Bộ lọc
               </h3>
               {(selectedTags.length > 0 || keyword) && (
                 <button
                   onClick={clearFilters}
-                  className="text-xs font-bold text-forest-leaf hover:underline"
+                  className="text-xs font-bold text-error hover:underline px-2"
                 >
-                  Xoá tất cả
+                  Xóa bộ lọc
                 </button>
               )}
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               {/* Tags Filter */}
               <section>
-                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">
+                <h4 className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-4">
                   Chủ đề
                 </h4>
                 <div className="flex flex-wrap gap-2">
@@ -124,10 +128,10 @@ export const SearchPage = () => {
                     <button
                       key={tag.id}
                       onClick={() => handleTagToggle(tag.name)}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
                         selectedTags.includes(tag.name)
-                          ? 'bg-forest-leaf text-white shadow-lg shadow-forest-leaf/20'
-                          : 'bg-white text-slate-500 hover:bg-slate-100 border border-slate-200'
+                          ? 'bg-forest-leaf text-white border-forest-leaf shadow-md'
+                          : 'bg-mist-beige text-on-surface-variant border-basalt-soil/5 hover:border-forest-leaf/30'
                       }`}
                     >
                       {tag.name}
@@ -138,7 +142,7 @@ export const SearchPage = () => {
 
               {/* Sort Filter */}
               <section>
-                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">
+                <h4 className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-4">
                   Sắp xếp theo
                 </h4>
                 <div className="space-y-2">
@@ -156,8 +160,8 @@ export const SearchPage = () => {
                       }}
                       className={`w-full text-left px-4 py-3 rounded-xl text-sm font-bold transition-all flex justify-between items-center ${
                         sort === option.value
-                          ? 'bg-forest-leaf/5 text-forest-leaf'
-                          : 'text-slate-500 hover:bg-slate-100'
+                          ? 'bg-forest-leaf/10 text-forest-leaf border border-forest-leaf/20'
+                          : 'text-on-surface-variant hover:bg-mist-beige border border-transparent'
                       }`}
                     >
                       {option.label}
@@ -172,69 +176,82 @@ export const SearchPage = () => {
 
         {/* Results Main Area */}
         <main className="flex-1 min-w-0">
-          <div className="flex justify-between items-center mb-8">
-            <p className="text-sm text-slate-500 font-medium">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+            <p className="text-sm text-on-surface-variant font-medium">
               Tìm thấy <span className="text-basalt-soil font-bold">{totalElements}</span> kết quả
             </p>
-            <div className="flex bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
-              <button className="p-2 text-forest-leaf bg-forest-leaf/5 rounded-lg">
+            <div className="flex bg-white p-1 rounded-xl border border-basalt-soil/5 shadow-sm">
+              <button className="p-2 text-forest-leaf bg-mist-beige rounded-lg">
                 <LayoutGrid className="w-4 h-4" />
               </button>
-              <button className="p-2 text-slate-400 hover:bg-slate-50 rounded-lg">
+              <button className="p-2 text-on-surface-variant hover:bg-mist-beige transition-colors rounded-lg">
                 <List className="w-4 h-4" />
               </button>
             </div>
           </div>
 
           {loading ? (
-            <div className="py-40 flex flex-col items-center gap-6">
-              <Loader2 className="w-12 h-12 text-forest-leaf animate-spin" />
-              <p className="text-slate-400 font-medium animate-pulse">
-                Đang truy vấn kho dữ liệu...
+            <div className="py-32 flex flex-col items-center justify-center gap-4 bg-white rounded-3xl border border-basalt-soil/5 shadow-sm">
+              <Loader2 className="w-10 h-10 text-forest-leaf animate-spin" />
+              <p className="text-on-surface-variant font-bold animate-pulse">
+                Đang tìm kiếm thông tin...
               </p>
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-gutter">
                 {posts.map((post) => (
                   <PostCard
                     key={post.id}
                     post={{
-                      ...post,
+                      id: post.id,
+                      title: post.title,
+                      summary: post.summary,
+                      tags: post.tags || [],
                       thumbnail: post.thumbnailUrl || undefined,
+                      images: post.thumbnailUrl ? [post.thumbnailUrl] : [],
+                      viewCount: post.viewCount,
+                      likeCount: post.likeCount,
+                      favoriteCount: post.favoriteCount,
+                      averageRating: post.averageRating,
+                      createdAt: post.createdAt,
                     }}
                   />
                 ))}
               </div>
 
               {posts.length === 0 && (
-                <div className="py-32 text-center bg-white rounded-[40px] border border-slate-100">
-                  <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Search className="w-8 h-8 text-slate-300" />
+                <div className="py-24 text-center bg-white rounded-3xl border border-basalt-soil/5 shadow-sm">
+                  <div className="w-20 h-20 bg-mist-beige rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Search className="w-8 h-8 text-outline/40" />
                   </div>
-                  <h3 className="text-xl font-bold text-basalt-soil mb-2">
+                  <h3 className="text-xl font-headline-md text-basalt-soil mb-2">
                     Không tìm thấy bài viết nào
                   </h3>
-                  <p className="text-slate-500 max-w-sm mx-auto">
-                    Thử thay đổi từ khoá hoặc xoá các bộ lọc để có thêm kết quả bạn nhé.
+                  <p className="text-on-surface-variant max-w-sm mx-auto mb-8">
+                    Thử thay đổi từ khóa hoặc xóa các bộ lọc để xem thêm nhiều bài viết thú vị khác
+                    nhé.
                   </p>
-                  <Button variant="outline" className="mt-8 rounded-full" onClick={clearFilters}>
-                    Xoá tất cả bộ lọc
+                  <Button
+                    onClick={clearFilters}
+                    className="bg-forest-leaf hover:bg-forest-leaf/90 text-white rounded-xl font-bold px-8"
+                  >
+                    Xóa bộ lọc
                   </Button>
                 </div>
               )}
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="mt-16 flex justify-center gap-2">
+                <div className="mt-16 flex justify-center gap-3">
                   {Array.from({ length: totalPages }).map((_, i) => (
                     <button
                       key={i}
                       onClick={() => setPage(i)}
-                      className={`w-12 h-12 rounded-2xl font-bold text-sm transition-all ${
+                      className={`w-12 h-12 rounded-xl font-bold text-sm transition-all ${
                         page === i
-                          ? 'bg-forest-leaf text-white shadow-xl shadow-forest-leaf/20 scale-110'
-                          : 'bg-white text-slate-500 hover:bg-slate-100 border border-slate-200 shadow-sm'
+                          ? 'bg-forest-leaf text-white shadow-lg'
+                          : 'bg-white text-on-surface-variant hover:text-forest-leaf hover:border-forest-leaf/30 border border-basalt-soil/5'
                       }`}
                     >
                       {i + 1}

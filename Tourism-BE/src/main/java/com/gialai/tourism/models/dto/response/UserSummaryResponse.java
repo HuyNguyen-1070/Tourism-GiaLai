@@ -1,5 +1,6 @@
 package com.gialai.tourism.models.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -13,8 +14,9 @@ public class UserSummaryResponse {
     private String email;
     private String avatar;
     private String provider;
+    @JsonProperty("isActive")
     private boolean isActive;
     private Set<String> roles;
     private int postCount;
     private LocalDateTime createdAt;
-}
+}

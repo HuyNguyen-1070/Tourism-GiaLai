@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { contentApi } from '@/services/api/contentApi';
 import { TourismOverview } from '@/types/content';
 import { Loader2, TrendingUp, Plane, Hotel, Map, Info } from 'lucide-react';
 
 export const OverviewPage = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState<TourismOverview | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -140,8 +142,11 @@ export const OverviewPage = () => {
                   })}
                 </div>
 
-                <button className="w-full mt-10 py-4 bg-basalt-soil text-white rounded-2xl font-bold hover:bg-basalt-soil/90 transition-all shadow-lg">
-                  Tải bản đồ du lịch
+                <button
+                  onClick={() => navigate('/map')}
+                  className="w-full mt-10 py-4 bg-basalt-soil text-white rounded-2xl font-bold hover:bg-basalt-soil/90 transition-all shadow-lg"
+                >
+                  Bản đồ du lịch
                 </button>
               </div>
 

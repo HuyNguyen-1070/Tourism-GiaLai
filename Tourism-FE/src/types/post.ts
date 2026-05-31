@@ -1,13 +1,6 @@
 export type PostStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'DELETED';
 export type SourceType = 'AUTHOR' | 'EXTERNAL';
-export type Tag =
-  | 'LOCATION'
-  | 'CULTURE'
-  | 'HISTORY'
-  | 'FESTIVAL'
-  | 'FOOD'
-  | 'ACCOMMODATION'
-  | 'TRANSPORT';
+export type Tag = string;
 
 export interface Post {
   id: string;
