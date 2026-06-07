@@ -11,24 +11,21 @@ import {
   Calendar,
   Eye,
   Heart,
-  Star,
   Bookmark,
   User,
   Link as LinkIcon,
-  Share2,
   Loader2,
   Map as MapIcon,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { toast } from 'sonner';
-import { useState } from 'react';
+
 
 export const PostDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const [ratingValue, setRatingValue] = useState<number | null>(null);
 
   // Fetch post detail
   const { data: post, isLoading: postLoading } = useQuery({
@@ -38,7 +35,7 @@ export const PostDetailPage = () => {
   });
 
   // Fetch interaction status
-  const { data: interaction, isLoading: statusLoading } = useQuery({
+  const { data: interaction } = useQuery({
     queryKey: ['interaction', id],
     queryFn: () => interactionApi.getInteractionStatus(id!),
     enabled: !!id && !!user,

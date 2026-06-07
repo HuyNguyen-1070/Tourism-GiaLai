@@ -18,7 +18,7 @@ export const AdminTagList = () => {
     setLoading(true);
     try {
       const res = await adminApi.getTags(keyword);
-      setTags(res.data);
+      setTags(res.data ?? []);
     } catch (error) {
       toast.error('Không thể tải danh sách tag');
     } finally {

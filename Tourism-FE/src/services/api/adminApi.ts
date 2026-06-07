@@ -57,8 +57,8 @@ export const adminApi = {
   deletePost: (postId: string) => api.delete(`/admin/posts/${postId}`),
 
   // Tag Management
-  getTags: (keyword?: string) =>
-    api.get<ApiResponse<TagAdminResponse[]>>('/admin/tags', { params: { keyword } }),
+  getTags: (keyword?: string): Promise<ApiResponse<TagAdminResponse[]>> =>
+    api.get('/admin/tags', { params: { keyword } }) as any,
 
   createTag: (name: string) => api.post('/admin/tags', { name }),
 

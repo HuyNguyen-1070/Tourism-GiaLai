@@ -9,7 +9,6 @@ import {
   Menu,
   X,
   FileText,
-  Heart,
   Bookmark,
   Settings,
   PlusCircle,

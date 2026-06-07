@@ -3,7 +3,6 @@ import { adminApi } from '@/services/api/adminApi';
 import { UserSummary } from '@/types/admin';
 import {
   Search,
-  Filter,
   MoreVertical,
   Lock,
   Unlock,
@@ -12,7 +11,6 @@ import {
   Loader2,
   ChevronLeft,
   ChevronRight,
-  UserPlus,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Role } from '@/types/auth';

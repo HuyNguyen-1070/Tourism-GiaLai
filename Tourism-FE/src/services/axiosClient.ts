@@ -34,7 +34,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
-
+console.log('VITE_API_BASE_URL=', import.meta.env.VITE_API_BASE_URL);
 api.interceptors.request.use(async (config) => {
   const token = localStorage.getItem(TOKEN_KEY);
   const isExcluded = isAuthExcluded(config.url);

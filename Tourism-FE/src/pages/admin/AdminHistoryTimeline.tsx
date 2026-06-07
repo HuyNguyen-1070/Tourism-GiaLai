@@ -61,10 +61,10 @@ export const AdminHistoryTimeline = () => {
 
     try {
       if (editingId) {
-        await adminApi.updateHistoryTimeline(editingId, formData);
+        await adminApi.updateHistoryTimeline(editingId, { ...formData, displayOrder: formData.displayOrder ?? 0 });
         toast.success('Đã cập nhật sự kiện lịch sử');
       } else {
-        await adminApi.createHistoryTimeline(formData);
+        await adminApi.createHistoryTimeline({ ...formData, displayOrder: formData.displayOrder ?? 0 });
         toast.success('Đã thêm sự kiện lịch sử mới');
       }
       setIsEditing(false);

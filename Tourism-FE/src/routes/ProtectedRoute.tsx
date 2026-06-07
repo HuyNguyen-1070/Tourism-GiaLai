@@ -1,8 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import type { RootState } from '@/store/store';
-import { logout } from '@/store/slices/authSlice';
 import { Role } from '@/types/auth';
 
 interface ProtectedRouteProps {
@@ -11,8 +10,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, children }) => {
-  const dispatch = useDispatch();
-  const { account, accessToken, refreshToken } = useSelector((state: RootState) => state.auth);
+  const { account, accessToken } = useSelector((state: RootState) => state.auth);
 
   // Không có token → chuyển về login
   if (!accessToken) {

@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { adminApi, LocationRequest } from '@/services/api/adminApi';
 import { mapApi } from '@/services/api/mapApi';
 import { AllLocationItem } from '@/types/map';
-import { MapPin, Search, Plus, Edit2, Trash2, Loader2, ExternalLink, Save, X } from 'lucide-react';
+import { Search, Plus, Edit2, Trash2, Loader2, ExternalLink, Save, X, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const AdminLocationManagement = () => {
@@ -19,6 +19,36 @@ export const AdminLocationManagement = () => {
     longitude: 0,
     placeId: '',
   });
+
+  // Post search state
+  const [postSearchKeyword, setPostSearchKeyword] = useState('');
+  const [isSearchingPost, setIsSearchingPost] = useState(false);
+  const [postSearchResults, setPostSearchResults] = useState<any[]>([]);
+  const [showPostDropdown, setShowPostDropdown] = useState(false);
+
+  // Handle post search
+  useEffect(() => {
+    // Skip searching if user just selected a post and keyword matches the title exactly
+    // but a safer way is to just let it search if they type.
+    const delayDebounceFn = setTimeout(async () => {
+      setIsSearchingPost(true);
+      try {
+        const res = await adminApi.getPosts({ 
+          keyword: postSearchKeyword || undefined, 
+          size: 50, 
+          status: 'APPROVED',
+          sort: 'desc'
+        });
+        setPostSearchResults(res.data?.content || []);
+      } catch (error) {
+        // ignore
+      } finally {
+        setIsSearchingPost(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [postSearchKeyword]);
 
   const fetchLocations = useCallback(async () => {
     setLoading(true);
@@ -68,6 +98,7 @@ export const AdminLocationManagement = () => {
       longitude: loc.longitude,
       placeId: loc.placeId || '',
     });
+    setPostSearchKeyword(loc.postTitle || '');
     setIsEditing(true);
   };
 
@@ -96,6 +127,7 @@ export const AdminLocationManagement = () => {
               longitude: 0,
               placeId: '',
             });
+            setPostSearchKeyword('');
             setIsEditing(true);
           }}
           className="flex items-center gap-2 px-6 py-3 bg-forest-leaf text-white rounded-2xl font-bold text-sm hover:shadow-lg transition-all"
@@ -187,9 +219,9 @@ export const AdminLocationManagement = () => {
       </div>
 
       {isEditing && (
-        <div className="fixed inset-0 bg-basalt-soil/60 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
-          <div className="bg-white w-full max-w-2xl rounded-[40px] p-10 shadow-2xl animate-in fade-in zoom-in duration-300">
-            <div className="flex justify-between items-center mb-8">
+        <div className="fixed inset-0 bg-basalt-soil/60 backdrop-blur-sm flex items-start justify-center z-[60] p-4 overflow-y-auto">
+          <div className="bg-white w-full max-w-2xl rounded-[40px] p-10 shadow-2xl animate-in fade-in zoom-in duration-300 flex flex-col my-auto mt-10 mb-32 relative">
+            <div className="flex justify-between items-center mb-8 shrink-0">
               <h2 className="text-2xl font-bold text-basalt-soil">
                 {formData.id ? 'Chỉnh sửa địa điểm' : 'Thêm địa điểm mới'}
               </h2>
@@ -246,16 +278,63 @@ export const AdminLocationManagement = () => {
                   className="w-full px-5 py-3 bg-slate-50 border-none rounded-2xl text-sm focus:ring-2 focus:ring-forest-leaf/20"
                 />
               </div>
-              <div className="col-span-2 space-y-2">
+              <div className="col-span-2 space-y-2 relative pb-20">
                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                  ID Bài viết liên kết
+                  Bài viết liên kết (Tìm theo tên)
                 </label>
-                <input
-                  type="text"
-                  value={formData.postId}
-                  onChange={(e) => setFormData({ ...formData, postId: e.target.value })}
-                  className="w-full px-5 py-3 bg-slate-50 border-none rounded-2xl text-sm focus:ring-2 focus:ring-forest-leaf/20"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={postSearchKeyword}
+                    onChange={(e) => {
+                      setPostSearchKeyword(e.target.value);
+                      setShowPostDropdown(true);
+                      // Clear postId if the user edits the search keyword
+                      if (formData.postId) {
+                        setFormData({ ...formData, postId: '' });
+                      }
+                    }}
+                    onFocus={() => setShowPostDropdown(true)}
+                    onBlur={() => setTimeout(() => setShowPostDropdown(false), 200)}
+                    placeholder="Nhập tên bài viết để tìm..."
+                    className="w-full px-5 py-3 bg-slate-50 border-none rounded-2xl text-sm focus:ring-2 focus:ring-forest-leaf/20"
+                  />
+                  {isSearchingPost && (
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                      <Loader2 className="w-4 h-4 text-slate-400 animate-spin" />
+                    </div>
+                  )}
+                </div>
+
+                {showPostDropdown && (
+                  <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+                    {postSearchResults.length > 0 ? (
+                      postSearchResults.map((post) => (
+                        <button
+                          key={post.id}
+                          type="button"
+                          onClick={() => {
+                            setFormData({ ...formData, postId: post.id });
+                            setPostSearchKeyword(post.title);
+                            setShowPostDropdown(false);
+                          }}
+                          className="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-none transition-colors"
+                        >
+                          <p className="text-sm font-bold text-basalt-soil line-clamp-1">{post.title}</p>
+                          <p className="text-xs text-slate-400 mt-1 font-mono">{post.id}</p>
+                        </button>
+                      ))
+                    ) : !isSearchingPost ? (
+                      <div className="px-4 py-3 text-sm text-slate-500 italic">Không tìm thấy bài viết nào</div>
+                    ) : null}
+                  </div>
+                )}
+                {formData.postId && (
+                  <p className="text-xs text-forest-leaf font-bold flex items-center gap-1 mt-2">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    Đã chọn ID: {formData.postId}
+                  </p>
+                )}
               </div>
             </div>
 

@@ -27,7 +27,7 @@ export const useAdminPosts = () => {
     async (page = 0, keyword?: string, tags?: string) => {
       setLoading(true);
       try {
-        const res = await adminApi.getPendingPosts({
+        const res = await adminApi.getPosts({
           page,
           size: 10,
           status: 'PENDING',
@@ -70,7 +70,7 @@ export const useAdminPosts = () => {
   const rejectPost = useCallback(
     async (postId: string, reason: string) => {
       try {
-        await adminApi.rejectPost(postId, reason);
+        await adminApi.rejectPost(postId, { reason });
         showToast('Đã từ chối bài viết', 'success');
         await fetchPendingPosts();
         return true;

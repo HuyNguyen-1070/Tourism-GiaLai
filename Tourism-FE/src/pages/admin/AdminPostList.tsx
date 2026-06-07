@@ -1,13 +1,10 @@
 import { useEffect, useState, useCallback } from 'react';
 import { adminApi } from '@/services/api/adminApi';
-import { Post } from '@/types/post';
 import {
   Search,
-  Filter,
   CheckCircle2,
   XCircle,
   Trash2,
-  Eye,
   Loader2,
   ChevronLeft,
   ChevronRight,

@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tags, Globe, Send, Edit3, Eye } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { adminApi, TagAdminResponse } from '@/services/api/adminApi';
+import { adminApi } from '@/services/api/adminApi';
 
 const postSchema = z
   .object({

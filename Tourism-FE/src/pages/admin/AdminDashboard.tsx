@@ -4,11 +4,9 @@ import { OverviewStats, PostActivity, TrendingTag, PostEngagement } from '@/type
 import {
   Users,
   FileText,
-  MessageSquare,
   Heart,
   TrendingUp,
   ArrowUpRight,
-  ArrowDownRight,
   Loader2,
   Calendar,
 } from 'lucide-react';
@@ -20,9 +18,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  BarChart,
-  Bar,
-  Cell,
 } from 'recharts';
 
 export const AdminDashboard = () => {

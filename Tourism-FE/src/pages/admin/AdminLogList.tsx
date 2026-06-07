@@ -2,7 +2,6 @@ import { useEffect, useState, useCallback } from 'react';
 import { adminApi } from '@/services/api/adminApi';
 import { AdminLog } from '@/types/admin';
 import {
-  Search,
   History,
   User,
   Activity,
