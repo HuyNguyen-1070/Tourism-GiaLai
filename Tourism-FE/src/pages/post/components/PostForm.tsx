@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tags, Globe, Send, Edit3, Eye } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { adminApi } from '@/services/api/adminApi';
+import { postApi } from '@/services/api/postApi';
 
 const postSchema = z
   .object({
@@ -147,7 +147,7 @@ export const PostForm = ({
   useEffect(() => {
     const loadTags = async () => {
       try {
-        const res = await adminApi.getTags();
+        const res = await postApi.getPublicTags();
         const tags = res.data ?? [];
 
         if (tags.length > 0) {
