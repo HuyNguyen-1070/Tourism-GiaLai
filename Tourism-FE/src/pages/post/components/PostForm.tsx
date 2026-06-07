@@ -5,9 +5,10 @@ import { RichTextEditor } from './RichTextEditor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Tags, Globe, Send, Edit3, Eye } from 'lucide-react';
+import { Tags, Globe, Send, Edit3, Eye, ImageIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { postApi } from '@/services/api/postApi';
+import { ImageUploader } from './ImageUploader';
 
 const postSchema = z
   .object({
@@ -295,6 +296,29 @@ export const PostForm = ({
 
       {/* RIGHT COLUMN: Sidebar (Sticky) */}
       <div className="space-y-6 lg:sticky lg:top-6 self-start">
+        {/* Images */}
+        <div className="bg-surface-container-low rounded-xl p-5 border border-outline-variant/20">
+          <SectionHeader
+            icon={ImageIcon}
+            title="Ảnh đại diện (Thumbnail)"
+            description="Tải lên ảnh bìa hiển thị ở danh sách bài viết"
+          />
+          <Controller
+            name="images"
+            control={control}
+            render={({ field }) => (
+              <ImageUploader
+                images={field.value ?? []}
+                onChange={field.onChange}
+                maxImages={10}
+              />
+            )}
+          />
+          {errors.images && (
+            <p className="text-red-500 text-xs mt-2">{errors.images.message}</p>
+          )}
+        </div>
+
         {/* Tags */}
         <div className="bg-surface-container-low rounded-xl p-5 border border-outline-variant/20">
           <SectionHeader icon={Tags} title="Thẻ phân loại" description="Chọn 1-5 thẻ" />
