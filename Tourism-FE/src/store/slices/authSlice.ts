@@ -10,9 +10,33 @@ interface AuthState {
 }
 
 /**
+ * Decode JWT payload without verifying signature
+ */
+const decodeJwtPayload = (token: string): { exp?: number } | null => {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+    return payload;
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Check if JWT token is expired
+ */
+const isTokenExpired = (token: string): boolean => {
+  const payload = decodeJwtPayload(token);
+  if (!payload || !payload.exp) return true;
+  // Add 10 second buffer
+  return Date.now() / 1000 > payload.exp - 10;
+};
+
+/**
  * Load trạng thái auth từ localStorage khi app khởi động.
- * Kiểm tra JWT expiry: nếu cả accessToken lẫn refreshToken đều hết hạn
- * → xóa storage và trả về trạng thái chưa đăng nhập (hiển thị hình 2).
+ * Kiểm tra JWT expiry: nếu accessToken hết hạn → chỉ giữ refreshToken để auto-refresh.
+ * Nếu không có refreshToken → xóa storage và trả về trạng thái chưa đăng nhập.
  */
 const loadFromStorage = (): AuthState => {
   const accessToken = localStorage.getItem(TOKEN_KEY);
@@ -22,7 +46,15 @@ const loadFromStorage = (): AuthState => {
   if (accessToken && refreshToken && accountStr) {
     try {
       const account = JSON.parse(accountStr);
-      return { isAuthenticated: true, account, accessToken, refreshToken };
+      // Keep state if either access or refresh token exists (axiosClient handles refresh)
+      if (!isTokenExpired(accessToken)) {
+        return { isAuthenticated: true, account, accessToken, refreshToken };
+      }
+      // Access token expired but refresh token may still work
+      // Keep isAuthenticated=true so axiosClient can refresh on first API call
+      if (refreshToken) {
+        return { isAuthenticated: true, account, accessToken, refreshToken };
+      }
     } catch {
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(REFRESH_TOKEN_KEY);

@@ -16,7 +16,7 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export const Login = () => {
-  const { login, loginGoogle, isAuthenticated, user } = useAuth();
+  const { login, loginGoogle, isAuthenticated, user, accessToken } = useAuth();
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,11 +33,22 @@ export const Login = () => {
   });
 
   useEffect(() => {
-    if (isAuthenticated && user) {
+    if (isAuthenticated && user && accessToken) {
+      // Check if token is still valid before auto-redirecting
+      try {
+        const parts = accessToken.split('.');
+        if (parts.length === 3) {
+          const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+          const isExpired = payload.exp && Date.now() / 1000 > payload.exp;
+          if (isExpired) return; // Don't redirect with expired token, let user re-authenticate
+        }
+      } catch {
+        return; // Can't parse token, don't redirect
+      }
       const isAdmin = user.roles?.includes(Role.ADMIN);
-      navigate(isAdmin ? '/admin/dashboard' : '/');
+      navigate(isAdmin ? '/admin' : '/', { replace: true });
     }
-  }, [isAuthenticated, user, navigate]);
+  }, [isAuthenticated, user, accessToken, navigate]);
 
   useEffect(() => {
     if (location.state?.passwordReset) {
@@ -59,10 +70,16 @@ export const Login = () => {
   const handleGoogleLogin = async (idToken: string) => {
     setError('');
     setIsGoogleLoading(true);
-    const result = await loginGoogle(idToken);
-    setIsGoogleLoading(false);
-    if (!result.success) {
-      setError(result.message || 'Đăng nhập Google thất bại');
+    try {
+      const result = await loginGoogle(idToken);
+      if (!result.success) {
+        setError(result.message || 'Đăng nhập Google thất bại');
+      }
+      // Navigate handled by useEffect when isAuthenticated changes
+    } catch {
+      setError('Đăng nhập Google thất bại');
+    } finally {
+      setIsGoogleLoading(false);
     }
   };
 

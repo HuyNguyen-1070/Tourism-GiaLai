@@ -150,6 +150,8 @@ export const useAuth = () => {
     try {
       const response = await authApi.googleLogin(idToken);
       const loginData = response.data;
+      console.log('[Google Login] response:', response);
+      console.log('[Google Login] loginData:', loginData);
       if (!loginData) throw new Error('Invalid response structure');
 
       const { accessToken, refreshToken, account: accountDto } = loginData;
@@ -168,6 +170,7 @@ export const useAuth = () => {
       dispatch(setCredentials({ accessToken, refreshToken, account: user }));
       return { success: true };
     } catch (error: unknown) {
+      console.error('[Google Login] error:', error);
       const err = error as ErrorResponse;
       return {
         success: false,

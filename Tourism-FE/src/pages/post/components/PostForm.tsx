@@ -42,7 +42,7 @@ const extractImageUrls = (html: string) => {
   tmp.innerHTML = html;
   return Array.from(tmp.querySelectorAll('img'))
     .map((img) => img.src)
-    .filter((src): src is string => Boolean(src));
+    .filter((src): src is string => Boolean(src) && !src.startsWith('data:image'));
 };
 
 const DEFAULT_TAGS: { value: string; label: string; emoji: string }[] = [

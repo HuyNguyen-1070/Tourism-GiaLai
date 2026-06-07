@@ -9,5 +9,5 @@ export const RootRedirect = () => {
   if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   const isAdmin = account?.roles?.includes(Role.ADMIN);
-  return <Navigate to={isAdmin ? '/admin/dashboard' : '/'} replace />;
+  return <Navigate to={isAdmin ? '/admin' : '/'} replace />;
 };
